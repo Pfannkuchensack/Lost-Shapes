@@ -206,7 +206,8 @@ function startsocket() {
 		const json = JSON.parse(data);
 		if(json.type == "move")
 		{
-			setPlayerNetwork(json.data.networkXPosition, json.data.networkYPosition, json.data.networkColor);
+			setPlayerNetwork(json.networkXPosition, json.networkYPosition, json.networkColor);
+			console.log(json);
 		}
 		console.log(data);
 	});
