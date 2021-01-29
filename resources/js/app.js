@@ -167,28 +167,28 @@ function buttonCollision(pressed) {
         if(pressed == UP) {
             if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
                 if(playerYPosition - shapeRadius + yPlayerSpeed >= button[3] && playerYPosition - shapeRadius <= button[3]){
-                    setWallNetworkwall(button[4], index);
+                    setWallNetwork(button[4], index);
                 }
             }
         }    
         else if(pressed == DOWN){
             if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
                 if(playerYPosition + shapeRadius - yPlayerSpeed <= button[1] && playerYPosition + shapeRadius >= button[1]){
-                    setWallNetworkwall(button[4], index);
+                    setWallNetwork(button[4], index);
                 }
             }
         }    
         else if(pressed == LEFT) {
             if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
                 if(playerXPosition - shapeRadius + xPlayerSpeed >= button[2] && playerXPosition - shapeRadius <= button[2]){
-                    setWallNetworkwall(button[4], index);
+                    setWallNetwork(button[4], index);
                 }
             }
         }
         else if(pressed == RIGHT) {
             if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= button[0] && playerXPosition + shapeRadius >= button[0]){
-                    setWallNetworkwall(button[4], index);
+                    setWallNetwork(button[4], index);
                 }
             }
         }
@@ -220,7 +220,7 @@ function setWallNetwork(wallid, buttonid)
 {
 	wallArray[wallid][4] = playerColor;
 	delete buttonArray[buttonid];
-	socket.emit("ls:gamelobby", {"t": "w", "w": wallid, "b": buttonid});
+	socket.emit("ls:gamelobby", {"t": "w", "w": wallid, "b": buttonid, 'C': playerColor});
 }
 
 function drawPlayerFieldOfView(){
