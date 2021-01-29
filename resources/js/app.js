@@ -53,10 +53,10 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
-    if(e.key == "Right" || e.key == "ArrowRight") {
+    if(e.key == "Right" || e.key == "ArrowRight" || e.key == "d") {
         rightPressed = false;
     }
-    else if(e.key == "Left" || e.key == "ArrowLeft") {
+    else if(e.key == "Left" || e.key == "ArrowLeft" || e.key == "a") {
         leftPressed = false;
     }
     else if(e.key == "Up" || e.key == "ArrowUp" || e.key == "w") {
