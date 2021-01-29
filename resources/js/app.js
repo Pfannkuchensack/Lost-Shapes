@@ -23,9 +23,12 @@ var lighting = 50;
 
 // x1, y1, x2, y2
 var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], 
-                [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 190, "#000000"],
+                [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 220, "#000000"], [130, 210, 170, 220, "#000000"],
                 [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"],
-                [290, 50, 300, 170, "#000000"], [300, 160, 330, 170, "#FF0000"], [330, 160, 340, 330, "#000000"]];
+                [290, 50, 300, 170, "#000000"], [300, 160, 330, 170, "#000000"], [330, 160, 340, 330, "#000000"],
+                ];
+
+var buttonArray = [[140, 180, 160, 200, 11]];
 
 const UP = 0;
 const DOWN = 1;
@@ -78,19 +81,23 @@ function movePlayer() {
     // right / left
     if(rightPressed) {
         playerXPosition += xPlayerSpeed;
+        buttonCollision(RIGHT);
         wallCollision(RIGHT);
     }    
     if(leftPressed){
         playerXPosition -= xPlayerSpeed;
+        buttonCollision(LEFT);
         wallCollision(LEFT);
     }
     // up / down
     if(upPressed) {
         playerYPosition -= yPlayerSpeed;
+        buttonCollision(UP);
         wallCollision(UP);
     }
     if(downPressed) {
         playerYPosition += yPlayerSpeed;
+        buttonCollision(DOWN);
         wallCollision(DOWN);
     }
 
@@ -112,6 +119,8 @@ function movePlayer() {
     if(rightPressed || leftPressed || upPressed || downPressed){
         socket.emit("ls:gamelobby", {"t": "m", "X": playerXPosition, "Y": playerYPosition, "C": playerColor});
     }
+
+    console.log(playerXPosition, playerYPosition)
     
 }
 
@@ -146,6 +155,44 @@ function wallCollision(pressed) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= wall[0] && playerXPosition + shapeRadius >= wall[0]){
                     playerXPosition = wall[0] - shapeRadius - 1;
+                }
+            }
+        }
+    });
+}
+
+function buttonCollision(pressed) {
+    buttonArray.forEach(function(button, index) {
+
+        if(pressed == UP) {
+            if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
+                if(playerYPosition - shapeRadius + yPlayerSpeed >= button[3] && playerYPosition - shapeRadius <= button[3]){
+                    wallArray[button[4]][4] = networkColor;
+                    delete buttonArray[index];
+                }
+            }
+        }    
+        else if(pressed == DOWN){
+            if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
+                if(playerYPosition + shapeRadius - yPlayerSpeed <= button[1] && playerYPosition + shapeRadius >= button[1]){
+                    wallArray[button[4]][4] = networkColor;
+                    delete buttonArray[index];
+                }
+            }
+        }    
+        else if(pressed == LEFT) {
+            if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
+                if(playerXPosition - shapeRadius + xPlayerSpeed >= button[2] && playerXPosition - shapeRadius <= button[2]){
+                    wallArray[button[4]][4] = networkColor;
+                    delete buttonArray[index];
+                }
+            }
+        }
+        else if(pressed == RIGHT) {
+            if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
+                if(playerXPosition + shapeRadius - xPlayerSpeed <= button[0] && playerXPosition + shapeRadius >= button[0]){
+                    wallArray[button[4]][4] = networkColor;
+                    delete buttonArray[index];
                 }
             }
         }
@@ -198,12 +245,23 @@ function drawWalls() {
     });
 }
 
+function drawButtons() {
+    buttonArray.forEach(function(button) {
+        ctx.beginPath();
+        ctx.fillStyle = "#39ad59";
+        ctx.rect(button[0], button[1], button[2] - button[0], button[3] - button[1]);
+        ctx.fill();
+        ctx.closePath();
+    });
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-	drawPlayer();
-	drawPlayerNetwork();
     drawWalls();
-    drawPlayerFieldOfView();
+    drawButtons();
+	drawPlayerNetwork();
+	drawPlayer();
+    //drawPlayerFieldOfView();
     movePlayer();    
 }
 
