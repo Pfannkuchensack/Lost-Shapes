@@ -99,7 +99,7 @@ io.on('connection', function (socket) {
 				const obj = JSON.parse(message);
 				if (obj.networkColor !== "#" + clients[socket.id].color) {
 					socket.emit('ls:gamelobby', message);
-					log(message);
+					//log(message);
 				}
 			} catch (error) {
 				log(error);

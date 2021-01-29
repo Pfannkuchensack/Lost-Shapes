@@ -110,7 +110,7 @@ function movePlayer() {
     }
 
     if(rightPressed || leftPressed || upPressed || downPressed){
-        socket.emit("ls:gamelobby", {"type": "move", "networkXPosition": playerXPosition, "networkYPosition": playerYPosition, "networkColor": playerColor});
+        socket.emit("ls:gamelobby", {"t": "m", "X": playerXPosition, "Y": playerYPosition, "C": playerColor});
     }
     
 }
@@ -217,9 +217,9 @@ function startsocket() {
 
 	socket.on('ls:gamelobby', function (data) {
 		const json = JSON.parse(data);
-		if(json.type == "move")
+		if(json.t == "m")
 		{
-			setPlayerNetwork(json.networkXPosition, json.networkYPosition, json.networkColor);
+			setPlayerNetwork(json.X, json.Y, json.C);
 			//console.log(json);
 		}
 	});
