@@ -19377,6 +19377,9 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var _require = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"),
+    axios = _require["default"];
+
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 var socket;
@@ -19395,10 +19398,14 @@ var xNetworkSpeed = 2;
 var yNetworkSpeed = 2;
 var shapeRadius = 10;
 var torch = false;
-var lighting = 50; // x1, y1, x2, y2
-
-var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 220, "#000000"], [130, 210, 170, 220, "#000000"], [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"], [290, 50, 300, 170, "#000000"], [300, 160, 330, 170, "#000000"], [330, 160, 340, 330, "#000000"]];
-var buttonArray = [[140, 180, 160, 200, 11]];
+var lighting = 50;
+var wallArray = [];
+var buttonArray = [];
+window.axios.get("/map/1").then(function (_ref) {
+  var data = _ref.data;
+  wallArray = data.walls;
+  buttonArray = data.buttons;
+});
 var UP = 0;
 var DOWN = 1;
 var LEFT = 2;
@@ -19484,8 +19491,6 @@ function movePlayer() {
       "C": playerColor
     });
   }
-
-  console.log(playerXPosition, playerYPosition);
 }
 
 function wallCollision(pressed) {
@@ -19533,25 +19538,25 @@ function buttonCollision(pressed) {
     if (pressed == UP) {
       if (playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]) {
         if (playerYPosition - shapeRadius + yPlayerSpeed >= button[3] && playerYPosition - shapeRadius <= button[3]) {
-          setWallNetworkwall(button[4], index);
+          setWall(button[4], index);
         }
       }
     } else if (pressed == DOWN) {
       if (playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]) {
         if (playerYPosition + shapeRadius - yPlayerSpeed <= button[1] && playerYPosition + shapeRadius >= button[1]) {
-          setWallNetworkwall(button[4], index);
+          setWall(button[4], index);
         }
       }
     } else if (pressed == LEFT) {
       if (playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]) {
         if (playerXPosition - shapeRadius + xPlayerSpeed >= button[2] && playerXPosition - shapeRadius <= button[2]) {
-          setWallNetworkwall(button[4], index);
+          setWall(button[4], index);
         }
       }
     } else if (pressed == RIGHT) {
       if (playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]) {
         if (playerXPosition + shapeRadius - xPlayerSpeed <= button[0] && playerXPosition + shapeRadius >= button[0]) {
-          setWallNetworkwall(button[4], index);
+          setWall(button[4], index);
         }
       }
     }
@@ -19580,14 +19585,20 @@ function drawPlayerNetwork() {
   ctx.closePath();
 }
 
-function setWallNetwork(wallid, buttonid) {
-  wallArray[wallid][4] = playerColor;
+function setWall(wallid, buttonid) {
+  wallArray[wallid][4] = networkColor;
   delete buttonArray[buttonid];
   socket.emit("ls:gamelobby", {
     "t": "w",
     "w": wallid,
-    "b": buttonid
+    "b": buttonid,
+    'C': playerColor
   });
+}
+
+function setWallNetwork(wallid, buttonid) {
+  wallArray[wallid][4] = playerColor;
+  delete buttonArray[buttonid];
 }
 
 function drawPlayerFieldOfView() {
