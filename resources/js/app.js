@@ -199,7 +199,7 @@ setInterval(draw, 10);
 function startsocket() {
 	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
-		socket.emit('go', {}/*{ hash: document.head.querySelector('meta[name="hash"]').content, user_id: document.head.querySelector('meta[name="user_id"]').content }*/);
+		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: document.head.querySelector('meta[name="gameid"]').content });
 	});
 
 	socket.on('lsgame', function (data) {
