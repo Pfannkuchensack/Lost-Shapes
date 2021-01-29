@@ -107,7 +107,7 @@ function movePlayer() {
     }
 
     if(rightPressed || leftPressed || upPressed || downPressed){
-        socket.emit("ls:gamelobby:" + gameid, {"type": "move", "networkXPosition": playerXPosition, "networkYPosition": playerYPosition, "networkColor": playerColor});
+        socket.emit("ls:gamelobby", {"type": "move", "networkXPosition": playerXPosition, "networkYPosition": playerYPosition, "networkColor": playerColor});
     }
     
 }
@@ -206,17 +206,16 @@ setInterval(draw, 10);
 function startsocket() {
 	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
-		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: document.head.querySelector('meta[name="gameid"]').content });
+		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: gameid });
 	});
 
-	socket.on('lsgame', function (data) {
+	socket.on('ls:gamelobby', function (data) {
 		const json = JSON.parse(data);
 		if(json.type == "move")
 		{
 			setPlayerNetwork(json.networkXPosition, json.networkYPosition, json.networkColor);
-			console.log(json);
+			//console.log(json);
 		}
-		console.log(data);
 	});
 
 	socket.on('debug', function (data) {
