@@ -4,7 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Lost Shapes</title>
+		<title>Lost Shapes</title>
+		<meta name="gameid" content="{{ $gameid }}">
+		<meta name="color" content="{{ $color }}">
 
         <!-- Fonts -->
         <!--<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">-->
