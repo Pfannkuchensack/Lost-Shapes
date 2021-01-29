@@ -18,7 +18,7 @@ var log = function () { return console.log.apply(console, ['[' + new Date().toIS
 
 /* redis + socket.io */
 const redis = require('redis');
-const io = require('socket.io');
+const io = require('socket.io')(server);
 const { argv } = require('process');
 server.listen(8010);
 log('Starte Websocket Server');
@@ -52,12 +52,12 @@ const RetryStrategy = function (options) {
 	return Math.min(options.attempt * 100, 3000);
 }
 const redisClient = redis.createClient({ host: process.env.REDIS_HOST, port: 6379, retry_strategy: RetryStrategy, lazyConnect: true, retry_unfulfilled_commands: true });
-redisClient.auth(process.env.REDIS_PASSWORD); // Nicht nötig local
+//redisClient.auth(process.env.REDIS_PASSWORD); // Nicht nötig local
 redisClient.subscribe('ls:gamelobby');
 
 
 
-io.listen(server).on('connection', function (socket) {
+io.on('connection', function (socket) {
 	// var hostname = socket.handshake.headers.host.toLowerCase();
 	socket.on('go', function (data) {
 		/* Logic ob user in lobby drin ist
@@ -85,7 +85,6 @@ io.listen(server).on('connection', function (socket) {
 	});
 
 	function NewMsg(channel, message) {
-		// @TODO: Wenn es mehr werden auf switch wechseln
 		if (channel == 'ls:gamelobby') {
 			try {
 				const obj = JSON.parse(message);
