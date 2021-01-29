@@ -216,11 +216,17 @@ function drawPlayerNetwork() {
 	ctx.closePath();
 }
 
-function setWallNetwork(wallid, buttonid)
+function setWall(wallid, buttonid)
 {
 	wallArray[wallid][4] = networkColor;
 	delete buttonArray[buttonid];
 	socket.emit("ls:gamelobby", {"t": "w", "w": wallid, "b": buttonid, 'C': playerColor});
+}
+
+function setWallNetwork(wallid, buttonid)
+{
+	wallArray[wallid][4] = playerColor;
+	delete buttonArray[buttonid];
 }
 
 function drawPlayerFieldOfView(){
