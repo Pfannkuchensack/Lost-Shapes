@@ -170,7 +170,7 @@ function drawPlayerNetwork() {
     ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
     ctx.fillStyle = networkColor;
     ctx.fill();
-    ctx.closePath();
+	ctx.closePath();
 }
 
 function drawPlayerFieldOfView(){
@@ -210,7 +210,7 @@ function draw() {
 setInterval(draw, 33);
 
 function startsocket() {
-	socket = io.connect('ws://192.168.0.12:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: gameid });
 	});
