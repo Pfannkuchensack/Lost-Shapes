@@ -10,7 +10,7 @@
         <!--<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">-->
 
         <!-- Styles -->
-        
+        <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body>
 		<div class="content">
