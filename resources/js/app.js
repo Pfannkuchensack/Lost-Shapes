@@ -1,10 +1,13 @@
 require('./bootstrap');
 
+var socket;
+const gameid = window.location.href.split("/")[4];
+const playerColor = "#" + window.location.href.split("/")[5];
+
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 55;
 var playerYPosition = 150;
-var playerColor
 var xPlayerSpeed = 2;
 var yPlayerSpeed = 2;
 var networkXPosition = 70;
@@ -103,6 +106,10 @@ function movePlayer() {
         playerYPosition = canvas.height - shapeRadius;
     }
 
+    if(rightPressed || leftPressed || upPressed || downPressed){
+        socket.emit("ls:gamelobby:" + gameid, {"type": "move", "networkXPosition": playerXPosition, "networkYPosition": playerYPosition, "networkColor": playerColor});
+    }
+    
 }
 
 function wallCollision(pressed) {
@@ -142,7 +149,7 @@ function wallCollision(pressed) {
 function drawPlayer() {
     ctx.beginPath();
     ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = playerColor;
     ctx.fill();
     ctx.closePath();
 }
