@@ -8,8 +8,8 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 55;
 var playerYPosition = 150;
-var xPlayerSpeed = 2;
-var yPlayerSpeed = 2;
+var xPlayerSpeed = 8;
+var yPlayerSpeed = 8;
 var networkXPosition = 70;
 var networkYPosition = 170;
 var networkColor = '#ff0000';
@@ -25,7 +25,7 @@ var lighting = 50;
 var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], 
                 [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 190, "#000000"],
                 [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"],
-                [290, 50, 300, 170, "#000000"], [300, 160, 340, 170, "#000000"], [330, 170, 340, 330, "#000000"]];
+                [290, 50, 300, 170, "#000000"], [300, 160, 340, 170, "#FF0000"], [330, 170, 340, 330, "#000000"]];
 
 const UP = 0;
 const DOWN = 1;
@@ -176,11 +176,11 @@ function drawPlayerNetwork() {
 function drawPlayerFieldOfView(){
     ctx.beginPath();
     ctx.fillStyle = "#383838";
-    if(torch && lighting < 100){
-        lighting += 1;
+    if(torch && lighting < 200){
+        lighting += 3;
     }
     else if(!torch && lighting > 50) {
-        lighting -= 1;
+        lighting -= 3;
     }
     ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI*2);
     ctx.rect(canvas.width, 0, -canvas.width, canvas.height);
@@ -207,10 +207,10 @@ function draw() {
     movePlayer();    
 }
 
-setInterval(draw, 10);
+setInterval(draw, 33);
 
 function startsocket() {
-	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket = io.connect('ws://192.168.0.12:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: gameid });
 	});
