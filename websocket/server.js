@@ -76,7 +76,7 @@ io.on('connection', function (socket) {
 			socket.disconnect();
 		}*/
 		redisClient.addListener('message', NewMsg);
-		clients[socket.id] = { socket: socket.id, user_id: socket.user_id };
+		clients[socket.id] = { socket: socket.id, user_id: socket.user_id, lobby: data.gameid, color: data.color };
 	});
 
 	socket.on('disconnect', reason => {
@@ -85,10 +85,10 @@ io.on('connection', function (socket) {
 	});
 
 	function NewMsg(channel, message) {
-		if (channel == 'ls:gamelobby') {
+		if (channel == 'ls:gamelobby:' + socket.lobby) {
 			try {
 				const obj = JSON.parse(message);
-				if (obj.user == socket.user_id) {
+				if (obj.networkColor != socket.color) {
 					socket.emit('lsgame', message);
 					log(message);
 				}
