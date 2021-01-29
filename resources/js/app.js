@@ -167,32 +167,28 @@ function buttonCollision(pressed) {
         if(pressed == UP) {
             if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
                 if(playerYPosition - shapeRadius + yPlayerSpeed >= button[3] && playerYPosition - shapeRadius <= button[3]){
-                    wallArray[button[4]][4] = networkColor;
-                    delete buttonArray[index];
+                    setWallNetworkwall(button[4], index);
                 }
             }
         }    
         else if(pressed == DOWN){
             if(playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]){
                 if(playerYPosition + shapeRadius - yPlayerSpeed <= button[1] && playerYPosition + shapeRadius >= button[1]){
-                    wallArray[button[4]][4] = networkColor;
-                    delete buttonArray[index];
+                    setWallNetworkwall(button[4], index);
                 }
             }
         }    
         else if(pressed == LEFT) {
             if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
                 if(playerXPosition - shapeRadius + xPlayerSpeed >= button[2] && playerXPosition - shapeRadius <= button[2]){
-                    wallArray[button[4]][4] = networkColor;
-                    delete buttonArray[index];
+                    setWallNetworkwall(button[4], index);
                 }
             }
         }
         else if(pressed == RIGHT) {
             if(playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= button[0] && playerXPosition + shapeRadius >= button[0]){
-                    wallArray[button[4]][4] = networkColor;
-                    delete buttonArray[index];
+                    setWallNetworkwall(button[4], index);
                 }
             }
         }
@@ -218,6 +214,13 @@ function drawPlayerNetwork() {
     ctx.fillStyle = networkColor;
     ctx.fill();
 	ctx.closePath();
+}
+
+function setWallNetwork(wallid, buttonid)
+{
+	wallArray[wallid][4] = playerColor;
+	delete buttonArray[buttonid];
+	socket.emit("ls:gamelobby", {"t": "w", "w": wallid, "b": buttonid});
 }
 
 function drawPlayerFieldOfView(){
@@ -279,6 +282,10 @@ function startsocket() {
 		{
 			setPlayerNetwork(json.X, json.Y, json.C);
 			//console.log(json);
+		}
+		if(json.t == "w")
+		{
+			setWallNetwork(json.w, json.b);
 		}
 	});
 

@@ -19379,13 +19379,15 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+var socket;
+var gameid = window.location.href.split("/")[4];
+var playerColor = "#" + window.location.href.split("/")[5];
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 55;
 var playerYPosition = 150;
-var playerColor;
-var xPlayerSpeed = 2;
-var yPlayerSpeed = 2;
+var xPlayerSpeed = 6;
+var yPlayerSpeed = 6;
 var networkXPosition = 70;
 var networkYPosition = 170;
 var networkColor = '#ff0000';
@@ -19395,7 +19397,8 @@ var shapeRadius = 10;
 var torch = false;
 var lighting = 50; // x1, y1, x2, y2
 
-var wallArray = [[50, 50, 60, 100], [60, 50, 100, 60], [120, 150, 130, 220]];
+var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 220, "#000000"], [130, 210, 170, 220, "#000000"], [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"], [290, 50, 300, 170, "#000000"], [300, 160, 330, 170, "#000000"], [330, 160, 340, 330, "#000000"]];
+var buttonArray = [[140, 180, 160, 200, 11]];
 var UP = 0;
 var DOWN = 1;
 var LEFT = 2;
@@ -19437,22 +19440,26 @@ function movePlayer() {
   // right / left
   if (rightPressed) {
     playerXPosition += xPlayerSpeed;
+    buttonCollision(RIGHT);
     wallCollision(RIGHT);
   }
 
   if (leftPressed) {
     playerXPosition -= xPlayerSpeed;
+    buttonCollision(LEFT);
     wallCollision(LEFT);
   } // up / down
 
 
   if (upPressed) {
     playerYPosition -= yPlayerSpeed;
+    buttonCollision(UP);
     wallCollision(UP);
   }
 
   if (downPressed) {
     playerYPosition += yPlayerSpeed;
+    buttonCollision(DOWN);
     wallCollision(DOWN);
   } // collision detection end of map
 
@@ -19468,15 +19475,29 @@ function movePlayer() {
   } else if (playerYPosition > canvas.height - shapeRadius) {
     playerYPosition = canvas.height - shapeRadius;
   }
+
+  if (rightPressed || leftPressed || upPressed || downPressed) {
+    socket.emit("ls:gamelobby", {
+      "t": "m",
+      "X": playerXPosition,
+      "Y": playerYPosition,
+      "C": playerColor
+    });
+  }
+
+  console.log(playerXPosition, playerYPosition);
 }
 
 function wallCollision(pressed) {
   wallArray.forEach(function (wall) {
-    //console.log(playerXPosition, playerYPosition, pressed);
+    if (wall[4] == playerColor) {
+      return;
+    }
+
     if (pressed == UP) {
       if (playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]) {
         if (playerYPosition - shapeRadius + yPlayerSpeed >= wall[3] && playerYPosition - shapeRadius <= wall[3]) {
-          playerYPosition = playerYPosition + yPlayerSpeed;
+          playerYPosition = wall[3] + shapeRadius + 1;
         }
       }
     }
@@ -19484,7 +19505,7 @@ function wallCollision(pressed) {
     if (pressed == DOWN) {
       if (playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]) {
         if (playerYPosition + shapeRadius - yPlayerSpeed <= wall[1] && playerYPosition + shapeRadius >= wall[1]) {
-          playerYPosition = playerYPosition - yPlayerSpeed;
+          playerYPosition = wall[1] - shapeRadius - 1;
         }
       }
     }
@@ -19492,7 +19513,7 @@ function wallCollision(pressed) {
     if (pressed == LEFT) {
       if (playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]) {
         if (playerXPosition - shapeRadius + xPlayerSpeed >= wall[2] && playerXPosition - shapeRadius <= wall[2]) {
-          playerXPosition = playerXPosition + xPlayerSpeed;
+          playerXPosition = wall[2] + shapeRadius + 1;
         }
       }
     }
@@ -19500,7 +19521,37 @@ function wallCollision(pressed) {
     if (pressed == RIGHT) {
       if (playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]) {
         if (playerXPosition + shapeRadius - xPlayerSpeed <= wall[0] && playerXPosition + shapeRadius >= wall[0]) {
-          playerXPosition = playerXPosition - xPlayerSpeed;
+          playerXPosition = wall[0] - shapeRadius - 1;
+        }
+      }
+    }
+  });
+}
+
+function buttonCollision(pressed) {
+  buttonArray.forEach(function (button, index) {
+    if (pressed == UP) {
+      if (playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]) {
+        if (playerYPosition - shapeRadius + yPlayerSpeed >= button[3] && playerYPosition - shapeRadius <= button[3]) {
+          setWallNetworkwall(button[4], index);
+        }
+      }
+    } else if (pressed == DOWN) {
+      if (playerXPosition + shapeRadius >= button[0] && playerXPosition - shapeRadius <= button[2]) {
+        if (playerYPosition + shapeRadius - yPlayerSpeed <= button[1] && playerYPosition + shapeRadius >= button[1]) {
+          setWallNetworkwall(button[4], index);
+        }
+      }
+    } else if (pressed == LEFT) {
+      if (playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]) {
+        if (playerXPosition - shapeRadius + xPlayerSpeed >= button[2] && playerXPosition - shapeRadius <= button[2]) {
+          setWallNetworkwall(button[4], index);
+        }
+      }
+    } else if (pressed == RIGHT) {
+      if (playerYPosition + shapeRadius >= button[1] && playerYPosition - shapeRadius <= button[3]) {
+        if (playerXPosition + shapeRadius - xPlayerSpeed <= button[0] && playerXPosition + shapeRadius >= button[0]) {
+          setWallNetworkwall(button[4], index);
         }
       }
     }
@@ -19510,7 +19561,7 @@ function wallCollision(pressed) {
 function drawPlayer() {
   ctx.beginPath();
   ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
+  ctx.fillStyle = playerColor;
   ctx.fill();
   ctx.closePath();
 }
@@ -19529,14 +19580,24 @@ function drawPlayerNetwork() {
   ctx.closePath();
 }
 
+function setWallNetwork(wallid, buttonid) {
+  wallArray[wallid][4] = playerColor;
+  delete buttonArray[buttonid];
+  socket.emit("ls:gamelobby", {
+    "t": "w",
+    "w": wallid,
+    "b": buttonid
+  });
+}
+
 function drawPlayerFieldOfView() {
   ctx.beginPath();
   ctx.fillStyle = "#383838";
 
-  if (torch && lighting < 100) {
-    lighting += 1;
+  if (torch && lighting < 200) {
+    lighting += 3;
   } else if (!torch && lighting > 50) {
-    lighting -= 1;
+    lighting -= 3;
   }
 
   ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
@@ -19548,8 +19609,18 @@ function drawPlayerFieldOfView() {
 function drawWalls() {
   wallArray.forEach(function (wall) {
     ctx.beginPath();
-    ctx.fillStyle = "black";
+    ctx.fillStyle = wall[4];
     ctx.rect(wall[0], wall[1], wall[2] - wall[0], wall[3] - wall[1]);
+    ctx.fill();
+    ctx.closePath();
+  });
+}
+
+function drawButtons() {
+  buttonArray.forEach(function (button) {
+    ctx.beginPath();
+    ctx.fillStyle = "#39ad59";
+    ctx.rect(button[0], button[1], button[2] - button[0], button[3] - button[1]);
     ctx.fill();
     ctx.closePath();
   });
@@ -19557,14 +19628,15 @@ function drawWalls() {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawPlayer();
-  drawPlayerNetwork();
   drawWalls();
-  drawPlayerFieldOfView();
+  drawButtons();
+  drawPlayerNetwork();
+  drawPlayer(); //drawPlayerFieldOfView();
+
   movePlayer();
 }
 
-setInterval(draw, 10);
+setInterval(draw, 33);
 
 function startsocket() {
   socket = io.connect('ws://localhost:8010', {
@@ -19575,18 +19647,19 @@ function startsocket() {
   socket.on('connect', function (data) {
     socket.emit('go', {
       color: document.head.querySelector('meta[name="color"]').content,
-      gameid: document.head.querySelector('meta[name="gameid"]').content
+      gameid: gameid
     });
   });
-  socket.on('lsgame', function (data) {
+  socket.on('ls:gamelobby', function (data) {
     var json = JSON.parse(data);
 
-    if (json.type == "move") {
-      setPlayerNetwork(json.networkXPosition, json.networkYPosition, json.networkColor);
-      console.log(json);
+    if (json.t == "m") {
+      setPlayerNetwork(json.X, json.Y, json.C); //console.log(json);
     }
 
-    console.log(data);
+    if (json.t == "w") {
+      setWallNetwork(json.w, json.b);
+    }
   });
   socket.on('debug', function (data) {
     console.log(data);
