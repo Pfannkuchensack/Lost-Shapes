@@ -4,8 +4,14 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 55;
 var playerYPosition = 150;
+var playerColor
 var xPlayerSpeed = 2;
 var yPlayerSpeed = 2;
+var networkXPosition = 70;
+var networkYPosition = 170;
+var networkColor = '#ff0000';
+var xNetworkSpeed = 2;
+var yNetworkSpeed = 2;
 
 var shapeRadius = 10;
 
@@ -140,6 +146,19 @@ function drawPlayer() {
     ctx.fill();
     ctx.closePath();
 }
+function setPlayerNetwork(networkXPositionNew,networkYPositionNew, networkColorNew) {
+	networkXPosition = networkXPositionNew;
+	networkYPosition = networkYPositionNew;
+	networkColor = networkColorNew;
+}
+
+function drawPlayerNetwork() {
+    ctx.beginPath();
+    ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
+    ctx.fillStyle = networkColor;
+    ctx.fill();
+    ctx.closePath();
+}
 
 function drawPlayerFieldOfView(){
     ctx.beginPath();
@@ -168,11 +187,33 @@ function drawWalls() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlayer();
+	drawPlayer();
+	drawPlayerNetwork();
     drawWalls();
     drawPlayerFieldOfView();
-
     movePlayer();    
 }
 
 setInterval(draw, 10);
+
+function startsocket() {
+	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket.on('connect', function (data) {
+		socket.emit('go', {}/*{ hash: document.head.querySelector('meta[name="hash"]').content, user_id: document.head.querySelector('meta[name="user_id"]').content }*/);
+	});
+
+	socket.on('lsgame', function (data) {
+		const json = JSON.parse(data);
+		if(json.type == "move")
+		{
+			setPlayerNetwork(json.data.networkXPosition, json.data.networkYPosition, json.data.networkColor);
+		}
+		console.log(data);
+	});
+
+	socket.on('debug', function (data) {
+		console.log(data);
+	});
+}
+
+window.addEventListener('load', startsocket);
