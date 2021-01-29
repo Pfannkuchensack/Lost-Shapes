@@ -118,7 +118,7 @@ function movePlayer() {
 function wallCollision(pressed) {
     wallArray.forEach(function(wall) {
         if(wall[4] == playerColor){
-          return;
+            return;
         }
 
         if(pressed == UP) {
@@ -210,7 +210,7 @@ function draw() {
 setInterval(draw, 33);
 
 function startsocket() {
-	socket = io.connect('ws://192.168.0.12:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: gameid });
 	});
