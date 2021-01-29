@@ -162,7 +162,7 @@ function drawPlayerNetwork() {
 
 function drawPlayerFieldOfView(){
     ctx.beginPath();
-    ctx.fillStyle = "#383838"
+    ctx.fillStyle = "#383838";
     if(torch && lighting < 100){
         lighting += 1;
     }
