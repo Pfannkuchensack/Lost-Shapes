@@ -53,7 +53,7 @@ const RetryStrategy = function (options) {
 }
 const redisClient = redis.createClient({ host: process.env.REDIS_HOST, port: 6379, retry_strategy: RetryStrategy, lazyConnect: true, retry_unfulfilled_commands: true });
 //redisClient.auth(process.env.REDIS_PASSWORD); // Nicht nötig local
-redisClient.subscribe('ls:gamelobby');
+
 
 
 
@@ -75,6 +75,7 @@ io.on('connection', function (socket) {
 			socket.emit('debug', 'Error' + data);
 			socket.disconnect();
 		}*/
+		redisClient.subscribe('ls:gamelobby:' + data.gameid);
 		redisClient.addListener('message', NewMsg);
 		clients[socket.id] = { socket: socket.id, user_id: socket.user_id, lobby: data.gameid, color: data.color };
 	});
@@ -82,6 +83,8 @@ io.on('connection', function (socket) {
 	socket.on('disconnect', reason => {
 		delete clients[socket.id];
 		redisClient.removeListener('message', NewMsg);
+		// @TODO: Prüfen ob noch jemand anders in der Lobby ist fehlt hier noch
+		redisClient.unsubscribe('ls:gamelobby:' + socket.lobby);
 	});
 
 	function NewMsg(channel, message) {
