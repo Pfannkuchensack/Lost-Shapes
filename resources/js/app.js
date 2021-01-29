@@ -19,7 +19,7 @@ var torch = false;
 var lighting = 50;
 
 // x1, y1, x2, y2
-var wallArray = [[50, 50, 60, 100], [60, 50, 100, 70], [120, 150, 130, 220]];
+var wallArray = [[50, 50, 60, 100], [60, 50, 100, 60], [120, 150, 130, 220]];
 
 const UP = 0;
 const DOWN = 1;
