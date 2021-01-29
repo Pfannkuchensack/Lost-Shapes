@@ -22,7 +22,10 @@ var torch = false;
 var lighting = 50;
 
 // x1, y1, x2, y2
-var wallArray = [[50, 50, 60, 100], [60, 50, 100, 60], [120, 150, 130, 220]];
+var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], 
+                [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 190, "#000000"],
+                [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"],
+                [290, 50, 300, 170, "#000000"], [300, 160, 340, 170, "#000000"], [330, 170, 340, 330, "#000000"]];
 
 const UP = 0;
 const DOWN = 1;
@@ -114,32 +117,35 @@ function movePlayer() {
 
 function wallCollision(pressed) {
     wallArray.forEach(function(wall) {
-        //console.log(playerXPosition, playerYPosition, pressed);
+        if(wall[4] == playerColor){
+          return;
+        }
+
         if(pressed == UP) {
             if(playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]){
                 if(playerYPosition - shapeRadius + yPlayerSpeed >= wall[3] && playerYPosition - shapeRadius <= wall[3]){
-                    playerYPosition = playerYPosition + yPlayerSpeed;
+                    playerYPosition = wall[3] + shapeRadius + 1;
                 }
             }
         }    
         if(pressed == DOWN){
             if(playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]){
                 if(playerYPosition + shapeRadius - yPlayerSpeed <= wall[1] && playerYPosition + shapeRadius >= wall[1]){
-                    playerYPosition = playerYPosition - yPlayerSpeed;
+                    playerYPosition = wall[1] - shapeRadius - 1;
                 }
             }
         }    
         if(pressed == LEFT) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition - shapeRadius + xPlayerSpeed >= wall[2] && playerXPosition - shapeRadius <= wall[2]){
-                    playerXPosition = playerXPosition + xPlayerSpeed;
+                    playerXPosition = wall[2] + shapeRadius + 1;
                 }
             }
         }
         if(pressed == RIGHT) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= wall[0] && playerXPosition + shapeRadius >= wall[0]){
-                    playerXPosition = playerXPosition - xPlayerSpeed;
+                    playerXPosition = wall[0] - shapeRadius - 1;
                 }
             }
         }
@@ -185,7 +191,7 @@ function drawPlayerFieldOfView(){
 function drawWalls() {
     wallArray.forEach(function(wall) {
         ctx.beginPath();
-        ctx.fillStyle = "black";
+        ctx.fillStyle = wall[4];
         ctx.rect(wall[0], wall[1], wall[2] - wall[0], wall[3] - wall[1]);
         ctx.fill();
         ctx.closePath();
