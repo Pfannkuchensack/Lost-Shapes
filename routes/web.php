@@ -13,3 +13,4 @@
 
 Route::get('/', 'MainController@index');
 Route::get('/game/{gameid}/{color}', 'MainController@game');
+Route::get('/map/{nr}', 'MainController@map');

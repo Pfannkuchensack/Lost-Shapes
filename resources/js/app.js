@@ -1,3 +1,5 @@
+const { default: axios } = require('axios');
+
 require('./bootstrap');
 
 var socket;
@@ -20,15 +22,13 @@ var shapeRadius = 10;
 
 var torch = false;
 var lighting = 50;
+var wallArray = [];
+var buttonArray = [];
 
-// x1, y1, x2, y2
-var wallArray = [[50, 50, 60, 100, "#000000"], [60, 50, 160, 60, "#000000"], 
-                [120, 150, 130, 220, "#000000"], [130, 150, 170, 160, "#0000FF"], [170, 150, 180, 220, "#000000"], [130, 210, 170, 220, "#000000"],
-                [450, 130, 520, 140, "#000000"], [450, 140, 460, 230, "#000000"], [460, 220, 500, 230, "#000000"], [490, 230, 500, 300, "#000000"],
-                [290, 50, 300, 170, "#000000"], [300, 160, 330, 170, "#000000"], [330, 160, 340, 330, "#000000"],
-                ];
-
-var buttonArray = [[140, 180, 160, 200, 11]];
+window.axios.get("/map/1").then(({ data }) => {
+	wallArray = data.walls;
+	buttonArray = data.buttons;
+});
 
 const UP = 0;
 const DOWN = 1;
