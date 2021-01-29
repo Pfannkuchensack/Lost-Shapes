@@ -52,6 +52,7 @@ const RetryStrategy = function (options) {
 	return Math.min(options.attempt * 100, 3000);
 }
 const redisClient = redis.createClient({ host: process.env.REDIS_HOST, port: 6379, retry_strategy: RetryStrategy, lazyConnect: true, retry_unfulfilled_commands: true });
+const redispub = redis.createClient({ host: process.env.REDIS_HOST, port: 6379, retry_strategy: RetryStrategy, lazyConnect: true, retry_unfulfilled_commands: true });
 //redisClient.auth(process.env.REDIS_PASSWORD); // Nicht nötig local
 
 
@@ -77,7 +78,12 @@ io.on('connection', function (socket) {
 		}*/
 		redisClient.subscribe('ls:gamelobby:' + data.gameid);
 		redisClient.addListener('message', NewMsg);
-		clients[socket.id] = { socket: socket.id, user_id: socket.user_id, lobby: data.gameid, color: data.color };
+		clients[socket.id] = { socket: socket.id, lobby: data.gameid, color: data.color };
+	});
+
+	socket.on('ls:gamelobby', function (message) {
+		//console.log('ls:gamelobby:' + clients[socket.id].lobby, JSON.stringify(message));
+		redispub.publish('ls:gamelobby:' + clients[socket.id].lobby, JSON.stringify(message));
 	});
 
 	socket.on('disconnect', reason => {
@@ -88,11 +94,11 @@ io.on('connection', function (socket) {
 	});
 
 	function NewMsg(channel, message) {
-		if (channel == 'ls:gamelobby:' + socket.lobby) {
+		if (channel == 'ls:gamelobby:' + clients[socket.id].lobby) {
 			try {
 				const obj = JSON.parse(message);
-				if (obj.networkColor != socket.color) {
-					socket.emit('lsgame', message);
+				if (obj.networkColor !== "#" + clients[socket.id].color) {
+					socket.emit('ls:gamelobby', message);
 					log(message);
 				}
 			} catch (error) {
