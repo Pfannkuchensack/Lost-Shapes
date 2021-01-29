@@ -11,4 +11,9 @@ class MainController extends Controller
 	{
 		return view('game.index');
 	}
+
+	public function game($gameid, $color)
+	{
+		return view('game.game', compact(['gameid', 'color']));
+	}
 }
