@@ -218,7 +218,7 @@ function drawPlayerNetwork() {
 
 function setWallNetwork(wallid, buttonid)
 {
-	wallArray[wallid][4] = playerColor;
+	wallArray[wallid][4] = networkColor;
 	delete buttonArray[buttonid];
 	socket.emit("ls:gamelobby", {"t": "w", "w": wallid, "b": buttonid, 'C': playerColor});
 }
