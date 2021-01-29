@@ -170,7 +170,7 @@ function drawPlayerNetwork() {
     ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
     ctx.fillStyle = networkColor;
     ctx.fill();
-    ctx.closePath();
+	ctx.closePath();
 }
 
 function drawPlayerFieldOfView(){
