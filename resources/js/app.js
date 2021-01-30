@@ -33,7 +33,7 @@ var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
 
-window.axios.get("/map/1").then(({ data }) => {
+window.axios.get("/map/map_001").then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
 });
@@ -276,7 +276,7 @@ function draw() {
     drawButtons();
 	drawPlayerNetwork();
 	drawPlayer();
-    drawPlayerFieldOfView();
+    //drawPlayerFieldOfView();
     movePlayer();    
 }
 
