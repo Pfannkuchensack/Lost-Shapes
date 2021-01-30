@@ -35,7 +35,7 @@ var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
 
-window.axios.get("/map/1").then(({ data }) => {
+window.axios.get("/map/" + window.location.href.split("/")[6]).then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
 });
