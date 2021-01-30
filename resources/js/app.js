@@ -224,15 +224,34 @@ function drawPlayerNetwork() {
 function drawPlayerFieldOfView(){
     ctx.beginPath();
     ctx.globalCompositionOperation = 'xor';
-    if(torch && lighting < 200){
+    if(torch && lighting < 120){
         lighting += 3;
     }
-    else if(!torch && lighting > 50) {
+    else if(!torch && lighting > 80) {
         lighting -= 3;
+	}
+	ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
+	/*if(rightPressed) {
+		ctx.arc(playerXPosition-shapeRadius, playerYPosition, lighting, 4.7123889804, Math.PI - 1.6); // done
+    }    
+    if(leftPressed){
+		ctx.arc(playerXPosition+shapeRadius, playerYPosition, lighting, 1.5707963268, Math.PI + 1.6); // done
     }
-    ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
-    ctx.fillStyle = "#383838";
+    // up / down
+    if(upPressed) {
+        ctx.arc(playerXPosition, playerYPosition+shapeRadius, lighting, 3.1415926536, Math.PI + 3.15); // done
+    }
+    if(downPressed) {
+        ctx.arc(playerXPosition, playerYPosition-shapeRadius, lighting, 0, Math.PI); // done
+	}
+	if (!downPressed && !upPressed && !leftPressed && !rightPressed) {
+		ctx.arc(playerXPosition, playerYPosition, lighting/2, 0, Math.PI * 2);
+	}*/
+	ctx.fillStyle = "#383838";
     ctx.rect(canvas.width, 0, -canvas.width, canvas.height);
+    ctx.fill();
+	ctx.fillStyle = "#383838";
+	//ctx.globalCompositionOperation = 'xor';
     ctx.fill();
     ctx.closePath();
 }
