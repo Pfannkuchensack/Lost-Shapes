@@ -244,7 +244,7 @@ function drawPlayerFieldOfView(){
 function drawWalls() {
     wallArray.forEach(function(wall) {
         ctx.beginPath();
-        ctx.fillStyle = wall[4];
+		ctx.fillStyle = wall[4];
         ctx.rect(wall[0], wall[1], wall[2] - wall[0], wall[3] - wall[1]);
         ctx.fill();
         ctx.closePath();
@@ -267,7 +267,7 @@ function draw() {
     drawButtons();
 	drawPlayerNetwork();
 	drawPlayer();
-    //drawPlayerFieldOfView();
+    drawPlayerFieldOfView();
     movePlayer();    
 }
 
