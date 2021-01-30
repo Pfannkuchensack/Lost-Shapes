@@ -21,8 +21,8 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 20;
 var playerYPosition = 20;
-var xPlayerSpeed = 6;
-var yPlayerSpeed = 6;
+var xPlayerSpeed = 3;
+var yPlayerSpeed = 3;
 var networkXPosition = 70;
 var networkYPosition = 170;
 
@@ -299,10 +299,10 @@ function draw() {
     movePlayer();    
 }
 
-setInterval(draw, 33);
+setInterval(draw, 15);
 
 function startsocket() {
-	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket = io.connect({ reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: playerColor, gameid: gameid });
 	});
