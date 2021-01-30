@@ -166,7 +166,7 @@ class Map:
                                    "#000000"])
 
         with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"walls": wall_rects}, outfile, indent=4)
+            json.dump({"buttons": [], "walls": wall_rects}, outfile, indent=4)
 
 
 if __name__ == "__main__":
