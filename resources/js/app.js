@@ -328,7 +328,7 @@ function draw() {
     drawButtons();
 	drawPlayerNetwork();
 	drawPlayer();
-    drawPlayerFieldOfView();
+    //drawPlayerFieldOfView();
     movePlayer();    
 }
 
