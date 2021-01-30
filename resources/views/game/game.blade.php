@@ -6,7 +6,7 @@
 
 		<title>Lost Shapes</title>
 		<meta name="gameid" content="{{ $gameid }}">
-		<meta name="color" content="{{ $color }}">
+		<meta name="map" content="{{ $map }}">
 
         <!-- Fonts -->
         <!--<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">-->

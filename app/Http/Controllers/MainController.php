@@ -12,9 +12,13 @@ class MainController extends Controller
 		return view('game.index');
 	}
 
-	public function game($gameid, $color)
+	public function game($gameid, $color, $map)
 	{
-		return view('game.game', compact(['gameid', 'color']));
+		if(file_exists(resource_path('map/' . $map . '.json')))
+		{
+			return view('game.game', compact(['gameid', 'map']));
+		}
+		return back();
 	}
 
 	public function map($nr)
