@@ -97,7 +97,7 @@ io.on('connection', function (socket) {
 		if (channel == 'ls:gamelobby:' + clients[socket.id].lobby) {
 			try {
 				const obj = JSON.parse(message);
-				if (obj.C !== "#" + clients[socket.id].color) {
+				if (obj.C !== clients[socket.id].color) {
 					socket.emit('ls:gamelobby', message);
 					//log(message);
 				}

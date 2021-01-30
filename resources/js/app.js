@@ -4,15 +4,17 @@ require('./bootstrap');
 
 var socket;
 const gameid = window.location.href.split("/")[4];
+var playerColor = '#120000';
+var networkColor = '#000012';
 if(window.location.href.split("/")[5] == 1)
 {
-	const playerColor = "#0000ff";
-	const networkColor = '#ff0000';
+	playerColor = "#0000ff";
+	networkColor = '#ff0000';
 }
 else
 {
-	const playerColor = '#ff0000';
-	const networkColor = '#0000ff';
+	playerColor = '#ff0000';
+	networkColor = '#0000ff';
 }
 
 var canvas = document.getElementById("game");
@@ -24,9 +26,6 @@ var yPlayerSpeed = 6;
 var networkXPosition = 70;
 var networkYPosition = 170;
 
-var xNetworkSpeed = 2;
-var yNetworkSpeed = 2;
-
 var shapeRadius = 10;
 
 var torch = false;
@@ -34,7 +33,7 @@ var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
 
-window.axios.get("/map/map_001").then(({ data }) => {
+window.axios.get("/map/1").then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
 });
@@ -126,7 +125,7 @@ function movePlayer() {
     }
 
     if(rightPressed || leftPressed || upPressed || downPressed){
-        socket.emit("ls:gamelobby", {"t": "m", "X": playerXPosition, "Y": playerYPosition, "C": playerColor});
+		socket.emit("ls:gamelobby", {"t": "m", "X": playerXPosition, "Y": playerYPosition, "C": playerColor});
     }
 }
 
@@ -208,6 +207,7 @@ function drawPlayer() {
     ctx.fill();
     ctx.closePath();
 }
+
 function setPlayerNetwork(networkXPositionNew,networkYPositionNew) {
 	networkXPosition = networkXPositionNew;
 	networkYPosition = networkYPositionNew;
@@ -215,7 +215,7 @@ function setPlayerNetwork(networkXPositionNew,networkYPositionNew) {
 
 function drawPlayerNetwork() {
     ctx.beginPath();
-    ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
+	ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
     ctx.fillStyle = networkColor;
     ctx.fill();
 	ctx.closePath();
@@ -285,7 +285,7 @@ setInterval(draw, 33);
 function startsocket() {
 	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
-		socket.emit('go', { color: document.head.querySelector('meta[name="color"]').content, gameid: gameid });
+		socket.emit('go', { color: playerColor, gameid: gameid });
 	});
 
 	socket.on('ls:gamelobby', function (data) {
@@ -293,7 +293,6 @@ function startsocket() {
 		if(json.t == "m")
 		{
 			setPlayerNetwork(json.X, json.Y);
-			//console.log(json);
 		}
 		if(json.t == "w")
 		{
