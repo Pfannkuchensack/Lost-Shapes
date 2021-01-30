@@ -354,7 +354,11 @@ function draw() {
 	drawPlayerNetwork();
 	drawPlayer();
     //drawPlayerFieldOfView();
-    movePlayer();    
+	movePlayer();
+	if(playerParts == 4 && networkParts == 4)
+	{
+		window.location.href = window.location.href.split("/").splice(0,6).join('/') + '/' +  window.location.href.split("/")[6] + 1;
+	} 
 }
 
 setInterval(draw, 33);
