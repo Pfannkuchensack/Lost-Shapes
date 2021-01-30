@@ -21,10 +21,12 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 20;
 var playerYPosition = 20;
+var playerParts = 0;
 var xPlayerSpeed = 6;
 var yPlayerSpeed = 6;
 var networkXPosition = 70;
 var networkYPosition = 170;
+var networkParts = 0;
 
 var shapeRadius = 10;
 
@@ -33,7 +35,7 @@ var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
 
-window.axios.get("/map/map_001").then(({ data }) => {
+window.axios.get("/map/" + window.location.href.split("/")[6]).then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
 });
@@ -201,10 +203,20 @@ function buttonCollision(pressed) {
 }
 
 function drawPlayer() {
-    ctx.beginPath();
-    ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
-    ctx.fillStyle = playerColor;
-    ctx.fill();
+	ctx.beginPath();
+	ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
+	ctx.strokeStyle  = playerColor;
+	ctx.stroke();
+	for(var i=0;i<playerParts;i++){
+		var startAngle=i*Math.PI/2;
+		var endAngle=startAngle+Math.PI/2;
+		ctx.beginPath();
+		ctx.moveTo(playerXPosition,playerYPosition);
+		ctx.arc(playerXPosition,playerYPosition,shapeRadius,startAngle,endAngle);
+		ctx.closePath();
+		ctx.fillStyle=playerColor
+		ctx.fill();
+	}
     ctx.closePath();
 }
 
@@ -214,25 +226,54 @@ function setPlayerNetwork(networkXPositionNew,networkYPositionNew) {
 }
 
 function drawPlayerNetwork() {
-    ctx.beginPath();
+	ctx.beginPath();
 	ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
-    ctx.fillStyle = networkColor;
-    ctx.fill();
+	ctx.strokeStyle  = networkColor;
+	ctx.stroke();
+	for(var i=0;i<networkParts;i++){
+		var startAngle=i*Math.PI/2;
+		var endAngle=startAngle+Math.PI/2;
+		ctx.beginPath();
+		ctx.moveTo(networkXPosition,networkYPosition);
+		ctx.arc(networkXPosition,networkYPosition,shapeRadius,startAngle,endAngle);
+		ctx.closePath();
+		ctx.fillStyle=networkColor
+		ctx.fill();
+	}
 	ctx.closePath();
 }
 
 function drawPlayerFieldOfView(){
     ctx.beginPath();
     ctx.globalCompositionOperation = 'xor';
-    if(torch && lighting < 200){
+    if(torch && lighting < 120){
         lighting += 3;
     }
-    else if(!torch && lighting > 50) {
+    else if(!torch && lighting > 80) {
         lighting -= 3;
+	}
+	ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
+	/*if(rightPressed) {
+		ctx.arc(playerXPosition-shapeRadius, playerYPosition, lighting, 4.7123889804, Math.PI - 1.6); // done
+    }    
+    if(leftPressed){
+		ctx.arc(playerXPosition+shapeRadius, playerYPosition, lighting, 1.5707963268, Math.PI + 1.6); // done
     }
-    ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
-    ctx.fillStyle = "#383838";
+    // up / down
+    if(upPressed) {
+        ctx.arc(playerXPosition, playerYPosition+shapeRadius, lighting, 3.1415926536, Math.PI + 3.15); // done
+    }
+    if(downPressed) {
+        ctx.arc(playerXPosition, playerYPosition-shapeRadius, lighting, 0, Math.PI); // done
+	}
+	if (!downPressed && !upPressed && !leftPressed && !rightPressed) {
+		ctx.arc(playerXPosition, playerYPosition, lighting/2, 0, Math.PI * 2);
+	}*/
+	ctx.fillStyle = "#383838";
     ctx.rect(canvas.width, 0, -canvas.width, canvas.height);
+    ctx.fill();
+	ctx.fillStyle = "#383838";
+	//ctx.globalCompositionOperation = 'xor';
     ctx.fill();
     ctx.closePath();
 }
@@ -248,6 +289,17 @@ function setWallNetwork(wallid, buttonid)
 {
 	wallArray[wallid][4] = playerColor;
 	delete buttonArray[buttonid];
+}
+
+function setParts()
+{
+	playerParts++;
+	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor});
+}
+
+function setPartsNetwork(partscount)
+{
+	networkParts = partscount;
 }
 
 function drawWalls() {
@@ -297,6 +349,10 @@ function startsocket() {
 		if(json.t == "w")
 		{
 			setWallNetwork(json.w, json.b);
+		}
+		if(json.t == "p")
+		{
+			setPartsNetwork(json.p);
 		}
 	});
 
