@@ -176,11 +176,11 @@ function wallCollision(pressed) {
         if(pressed == RIGHT) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= wall[0] && playerXPosition + shapeRadius >= wall[0]){
-					console.log(index,wall);
+					/*console.log(index,wall);
 
 					if(wall[4].toLowerCase() == playerColor.toLowerCase()){
 						return;
-					}
+					}*/
                     playerXPosition = wall[0] - shapeRadius - 1;
                 }
             }
