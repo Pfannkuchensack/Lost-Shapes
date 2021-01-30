@@ -3,11 +3,13 @@ from pygame.locals import *
 import pygame.key
 import json
 
+
 class App:
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     GREY = (180, 180, 180)
     RED = (255, 0, 0)
+    BLUE = (0, 0, 255)
 
     SCALE = 2
 
@@ -21,6 +23,8 @@ class App:
         self.square_state = False
 
         self.scale = 2
+
+        self.color = self.BLACK
 
     def on_init(self):
         pygame.init()
@@ -46,19 +50,25 @@ class App:
 
         if event.type == pygame.KEYDOWN:
             if event.key == ord('s'):
-                self.map.print_map()
+                self.map.save_map()
+            if event.key == ord('q'):
+                self.color = self.BLUE
+            if event.key == ord('w'):
+                self.color = self.RED
+            if event.key == ord('e'):
+                self.color = self.BLACK
 
     def on_loop(self):
         if self.mouse_pressed:
             pos = pygame.mouse.get_pos()
-            self.map.set_square(pos[0], pos[1], self.square_state)
+            self.map.set_square(pos[0], pos[1], self.square_state, self.color)
 
     def on_render(self):
         self._display_surf.fill(self.WHITE)
         for y, row in enumerate(self.map.squares):
             for x, square_bool in enumerate(row):
                 if square_bool:
-                    pygame.draw.rect(self._display_surf, self.BLACK,
+                    pygame.draw.rect(self._display_surf, self.map.square_colors[y][x],
                                      (self.map.division_size * x, self.map.division_size * y,
                                       self.map.division_size, self.map.division_size))
                 else:
@@ -87,6 +97,10 @@ class App:
 
 class Map:
 
+    BLACK = (0, 0, 0)
+    RED = (255, 0, 0)
+    BLUE = (0, 0, 255)
+
     def __init__(self, width, height, division_size, scale):
 
         self.width = width
@@ -95,6 +109,7 @@ class Map:
         self.scale = scale
 
         self.squares = [[False for i in range(width // division_size)] for j in range(height // division_size)]
+        self.square_colors = [[(255, 255, 255) for i in range(width // division_size)] for j in range(height // division_size)]
 
     def toggle_square(self, x, y):
 
@@ -103,19 +118,31 @@ class Map:
 
         self.squares[y_coord][x_coord] = not self.squares[y_coord][x_coord]
 
-    def set_square(self, x, y, state):
+    def set_square(self, x, y, state, color):
 
         x_coord = x // self.division_size
         y_coord = y // self.division_size
 
         self.squares[y_coord][x_coord] = state
+        self.square_colors[y_coord][x_coord] = color
+        test = True
 
-    def print_map(self):
+    def save_map(self):
+
+        walls = []
+        for color in [self.BLACK, self.RED, self.BLUE]:
+            color_map = self.extract_color_walls(color)
+            color_walls = self.get_wall_list_from_color_map(color_map, color)
+            walls.extend(color_walls)
+
+        with open('map_files/map_001.json', 'w') as outfile:
+            json.dump({"buttons": [], "walls": walls}, outfile, indent=4)
+
+    def get_wall_list_from_color_map(self, color_map, color):
 
         # start_x, end_x, y
         x_walls = []
-
-        for y, row in enumerate(self.squares):
+        for y, row in enumerate(color_map):
             prev_x = False
             wall_start_x = 0
             for x, x_val in enumerate(row):
@@ -126,13 +153,13 @@ class Map:
                     prev_x = False
                     x_walls.append([wall_start_x, x - 1, y])
                     wall_start_x = 0
+
             if prev_x:
                 x_walls.append([wall_start_x, len(row), y])
 
         # start_y, end_y, x
         y_walls = []
-
-        transposed_squares = list(map(list, zip(*self.squares)))
+        transposed_squares = list(map(list, zip(*color_map)))
         for x, col in enumerate(transposed_squares):
             prev_y = False
             wall_start_y = 0
@@ -148,7 +175,6 @@ class Map:
                 y_walls.append([wall_start_y, len(col), x])
 
         # x, y, width, height, color
-
         wall_rects = []
         for wall in x_walls:
             if wall[1] - wall[0] > 1:
@@ -156,17 +182,30 @@ class Map:
                                    wall[2] * self.division_size // self.scale,
                                    (wall[1] * self.division_size + self.division_size) // self.scale,
                                    (wall[2] * self.division_size + self.division_size) // self.scale,
-                                   "#000000"])
+                                   '#%02x%02x%02x' % color])
         for wall in y_walls:
             if wall[1] - wall[0] > 1:
                 wall_rects.append([wall[2] * self.division_size // self.scale,
                                    wall[0] * self.division_size // self.scale,
                                    (wall[2] * self.division_size + self.division_size) // self.scale,
                                    (wall[1] * self.division_size + self.division_size) // self.scale,
-                                   "#000000"])
+                                   '#%02x%02x%02x' % color])
 
-        with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"buttons": [], "walls": wall_rects}, outfile, indent=4)
+        return wall_rects
+
+    def extract_color_walls(self, color):
+
+        color_map = []
+        for row in self.square_colors:
+            temp_row = []
+            for val in row:
+                if val == color:
+                    temp_row.append(True)
+                else:
+                    temp_row.append(False)
+            color_map.append(temp_row)
+        return color_map
+
 
 
 if __name__ == "__main__":
