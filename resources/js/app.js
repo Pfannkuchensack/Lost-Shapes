@@ -21,10 +21,12 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var playerXPosition = 20;
 var playerYPosition = 20;
+var playerParts = 0;
 var xPlayerSpeed = 6;
 var yPlayerSpeed = 6;
 var networkXPosition = 70;
 var networkYPosition = 170;
+var networkParts = 0;
 
 var shapeRadius = 10;
 
@@ -201,10 +203,20 @@ function buttonCollision(pressed) {
 }
 
 function drawPlayer() {
-    ctx.beginPath();
-    ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
-    ctx.fillStyle = playerColor;
-    ctx.fill();
+	ctx.beginPath();
+	ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
+	ctx.strokeStyle  = playerColor;
+	ctx.stroke();
+	for(var i=0;i<playerParts;i++){
+		var startAngle=i*Math.PI/2;
+		var endAngle=startAngle+Math.PI/2;
+		ctx.beginPath();
+		ctx.moveTo(playerXPosition,playerYPosition);
+		ctx.arc(playerXPosition,playerYPosition,shapeRadius,startAngle,endAngle);
+		ctx.closePath();
+		ctx.fillStyle=playerColor
+		ctx.fill();
+	}
     ctx.closePath();
 }
 
@@ -214,10 +226,20 @@ function setPlayerNetwork(networkXPositionNew,networkYPositionNew) {
 }
 
 function drawPlayerNetwork() {
-    ctx.beginPath();
+	ctx.beginPath();
 	ctx.arc(networkXPosition, networkYPosition, shapeRadius, 0, Math.PI*2);
-    ctx.fillStyle = networkColor;
-    ctx.fill();
+	ctx.strokeStyle  = networkColor;
+	ctx.stroke();
+	for(var i=0;i<networkParts;i++){
+		var startAngle=i*Math.PI/2;
+		var endAngle=startAngle+Math.PI/2;
+		ctx.beginPath();
+		ctx.moveTo(networkXPosition,networkYPosition);
+		ctx.arc(networkXPosition,networkYPosition,shapeRadius,startAngle,endAngle);
+		ctx.closePath();
+		ctx.fillStyle=networkColor
+		ctx.fill();
+	}
 	ctx.closePath();
 }
 
@@ -269,6 +291,17 @@ function setWallNetwork(wallid, buttonid)
 	delete buttonArray[buttonid];
 }
 
+function setParts()
+{
+	playerParts++;
+	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor});
+}
+
+function setPartsNetwork(partscount)
+{
+	networkParts = partscount;
+}
+
 function drawWalls() {
     wallArray.forEach(function(wall) {
         ctx.beginPath();
@@ -316,6 +349,10 @@ function startsocket() {
 		if(json.t == "w")
 		{
 			setWallNetwork(json.w, json.b);
+		}
+		if(json.t == "p")
+		{
+			setPartsNetwork(json.p);
 		}
 	});
 
