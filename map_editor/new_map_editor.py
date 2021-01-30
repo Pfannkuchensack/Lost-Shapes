@@ -55,6 +55,8 @@ class App:
                 self.color = util.RED
             if event.key == ord('e'):
                 self.color = util.BLACK
+            if event.key == ord('r'):
+                self.color = util.GREEN
 
     def on_loop(self):
         if self.mouse_pressed:
@@ -195,12 +197,20 @@ class Map:
                     # x_coord_0, y_coord_0, x_coord_1, y_coord_1, color
                     walls.append([key, wall_value[0], key, wall_value[1], util.rgb_to_hex_color(color)])
 
+        buttons = []
+        for y, row in enumerate(self.tiles):
+            for x, tile in enumerate(row):
+                if tile.color == util.GREEN and self.tiles[y - 1][x].color != util.GREEN:
+                    buttons.append([x * self.grid_size, y * self.grid_size,
+                                    x * self.grid_size + 2 * self.grid_size, y * self.grid_size + 2 * self.grid_size])
+
+
         # save to json
         with open('map_files/map_coords_001.json', 'w') as outfile:
-            json.dump({"walls": walls}, outfile, indent=4)
+            json.dump({"buttons": buttons, "walls": walls}, outfile, indent=4)
 
         with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"buttons": [], "walls": util.convert_json_coords_to_json_rects(
+            json.dump({"buttons": buttons, "walls": util.convert_json_coords_to_json_rects(
                 self.grid_size, {"walls": walls})}, outfile, indent=4)
 
     def load_from_json(self):
@@ -223,6 +233,14 @@ class Map:
                     for x_coord in range(x_0, x_1 + 1):
                         self.tiles[y_0][x_coord].tile_state = True
                         self.tiles[y_0][x_coord].color = util.hex_to_rgb_color(color)
+
+            buttons = json_data["buttons"]
+            for button in buttons:
+                x_0, y_0, x_1, y_1 = (i // self.grid_size for i in button)
+                self.tiles[y_0][x_0].tile_state = True
+                self.tiles[y_0][x_0].color = util.GREEN
+                self.tiles[y_0 + 1][x_0].tile_state = True
+                self.tiles[y_0 + 1][x_0].color = util.GREEN
 
 
 
