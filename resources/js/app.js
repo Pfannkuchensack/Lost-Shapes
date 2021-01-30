@@ -17,8 +17,8 @@ else
 
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var playerXPosition = 55;
-var playerYPosition = 150;
+var playerXPosition = 20;
+var playerYPosition = 20;
 var xPlayerSpeed = 6;
 var yPlayerSpeed = 6;
 var networkXPosition = 70;
@@ -34,7 +34,7 @@ var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
 
-window.axios.get("/map/1").then(({ data }) => {
+window.axios.get("/map/map_001").then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
 });
@@ -221,6 +221,22 @@ function drawPlayerNetwork() {
 	ctx.closePath();
 }
 
+function drawPlayerFieldOfView(){
+    ctx.beginPath();
+    ctx.globalCompositionOperation = 'xor';
+    if(torch && lighting < 200){
+        lighting += 3;
+    }
+    else if(!torch && lighting > 50) {
+        lighting -= 3;
+    }
+    ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
+    ctx.fillStyle = "#383838";
+    ctx.rect(canvas.width, 0, -canvas.width, canvas.height);
+    ctx.fill();
+    ctx.closePath();
+}
+
 function setWall(wallid, buttonid)
 {
 	wallArray[wallid][4] = networkColor;
@@ -232,21 +248,6 @@ function setWallNetwork(wallid, buttonid)
 {
 	wallArray[wallid][4] = playerColor;
 	delete buttonArray[buttonid];
-}
-
-function drawPlayerFieldOfView(){
-    ctx.beginPath();
-    ctx.fillStyle = "#383838";
-    if(torch && lighting < 200){
-        lighting += 3;
-    }
-    else if(!torch && lighting > 50) {
-        lighting -= 3;
-    }
-    ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI*2);
-    ctx.rect(canvas.width, 0, -canvas.width, canvas.height);
-    ctx.fill();
-    ctx.closePath();
 }
 
 function drawWalls() {
