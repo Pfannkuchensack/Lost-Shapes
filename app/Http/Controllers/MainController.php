@@ -19,7 +19,7 @@ class MainController extends Controller
 
 	public function map($nr)
 	{
-		if(\file_exists(resource_path('map/' . $nr . '.json')))
+		if(file_exists(resource_path('map/' . $nr . '.json')))
 		{
 			return response()->file(resource_path('map/' . $nr . '.json'));
 		}

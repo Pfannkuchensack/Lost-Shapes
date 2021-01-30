@@ -4,7 +4,16 @@ require('./bootstrap');
 
 var socket;
 const gameid = window.location.href.split("/")[4];
-const playerColor = "#" + window.location.href.split("/")[5];
+if(window.location.href.split("/")[5] == 1)
+{
+	const playerColor = "#0000ff";
+	const networkColor = '#ff0000';
+}
+else
+{
+	const playerColor = '#ff0000';
+	const networkColor = '#0000ff';
+}
 
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
@@ -14,7 +23,7 @@ var xPlayerSpeed = 6;
 var yPlayerSpeed = 6;
 var networkXPosition = 70;
 var networkYPosition = 170;
-var networkColor = '#ff0000';
+
 var xNetworkSpeed = 2;
 var yNetworkSpeed = 2;
 
@@ -199,10 +208,9 @@ function drawPlayer() {
     ctx.fill();
     ctx.closePath();
 }
-function setPlayerNetwork(networkXPositionNew,networkYPositionNew, networkColorNew) {
+function setPlayerNetwork(networkXPositionNew,networkYPositionNew) {
 	networkXPosition = networkXPositionNew;
 	networkYPosition = networkYPositionNew;
-	networkColor = networkColorNew;
 }
 
 function drawPlayerNetwork() {
@@ -283,7 +291,7 @@ function startsocket() {
 		const json = JSON.parse(data);
 		if(json.t == "m")
 		{
-			setPlayerNetwork(json.X, json.Y, json.C);
+			setPlayerNetwork(json.X, json.Y);
 			//console.log(json);
 		}
 		if(json.t == "w")
