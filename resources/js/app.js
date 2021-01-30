@@ -34,10 +34,12 @@ var torch = false;
 var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
+var partsArray = [];
 
 window.axios.get("/map/" + window.location.href.split("/")[6]).then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
+	partsArray = data.parts;
 });
 
 const UP = 0;
