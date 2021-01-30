@@ -24,8 +24,8 @@ class App:
 
     def on_init(self):
         pygame.init()
-        self._display_surf = pygame.display.set_mode(tuple(self.SCALE * i for i in self.size), pygame.HWSURFACE |
-                                                     pygame.DOUBLEBUF)
+        self._display_surf = pygame.display.set_mode((self.width * self.SCALE, self.height * self.SCALE),
+                                                     pygame.HWSURFACE | pygame.DOUBLEBUF)
         self._running = True
 
     def on_event(self, event):
@@ -57,6 +57,10 @@ class App:
                 self.color = util.BLACK
             if event.key == ord('r'):
                 self.color = util.GREEN
+            if event.key == ord('a'):
+                self.color = util.BLUE_SHAPE
+            if event.key == ord('s'):
+                self.color = util.RED_SHAPE
 
     def on_loop(self):
         if self.mouse_pressed:
@@ -204,13 +208,22 @@ class Map:
                     buttons.append([x * self.grid_size, y * self.grid_size,
                                     x * self.grid_size + 2 * self.grid_size, y * self.grid_size + 2 * self.grid_size])
 
+        shapes = []
+        for color in [util.BLUE_SHAPE, util.RED_SHAPE]:
+            for y, row in enumerate(self.tiles):
+                for x, tile in enumerate(row):
+                    if tile.color == color:
+                        if color == util.BLUE_SHAPE:
+                            shapes.append([x * self.grid_size, y * self.grid_size, util.rgb_to_hex_color(util.BLUE)])
+                        else:
+                            shapes.append([x * self.grid_size, y * self.grid_size, util.rgb_to_hex_color(util.RED)])
 
         # save to json
         with open('map_files/map_coords_001.json', 'w') as outfile:
-            json.dump({"buttons": buttons, "walls": walls}, outfile, indent=4)
+            json.dump({"shapes": shapes, "buttons": buttons, "walls": walls}, outfile, indent=4)
 
         with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"buttons": buttons, "walls": util.convert_json_coords_to_json_rects(
+            json.dump({"shapes": shapes, "buttons": buttons, "walls": util.convert_json_coords_to_json_rects(
                 self.grid_size, {"walls": walls})}, outfile, indent=4)
 
     def load_from_json(self):
@@ -242,6 +255,14 @@ class Map:
                 self.tiles[y_0 + 1][x_0].tile_state = True
                 self.tiles[y_0 + 1][x_0].color = util.GREEN
 
+            shapes = json_data["shapes"]
+            for shape in shapes:
+                x, y, color = (shape[0] // self.grid_size, shape[1] // self.grid_size, shape[2])
+                self.tiles[y][x].tile_state = True
+                if util.hex_to_rgb_color(color) == util.RED:
+                    self.tiles[y][x].color = util.RED_SHAPE
+                else:
+                    self.tiles[y][x].color = util.BLUE_SHAPE
 
 
 class Tile:
