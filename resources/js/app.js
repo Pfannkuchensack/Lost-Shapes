@@ -347,12 +347,25 @@ function drawButtons() {
     });
 }
 
+function drawParts() {
+    partsArray.forEach(function(part) {
+		ctx.beginPath();
+		ctx.moveTo(part[0], part[1]);
+		ctx.arc(part[0], part[1], shapeRadius, Math.PI / 2, Math.PI);
+		ctx.closePath();
+		ctx.fillStyle = part[2];
+		ctx.fill();
+        ctx.closePath();
+    });
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWalls();
     drawButtons();
 	drawPlayerNetwork();
-	drawPlayer();
+    drawPlayer();
+    drawParts();
     //drawPlayerFieldOfView();
     movePlayer();    
 }
