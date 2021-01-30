@@ -146,14 +146,14 @@ class Map:
                         wall_start = x
                         prev_tile_state = True
                     elif prev_tile_state and tile_state is False:
-                        if x - 1 - wall_start > 1:
+                        if x - wall_start > 1:
                             if y not in x_walls:
                                 x_walls[y] = []
                             x_walls[y].append((wall_start, x - 1))
                         prev_tile_state = False
                         wall_start = -1
                 if prev_tile_state:
-                    if x - 1 - wall_start > 1:
+                    if x - wall_start > 1:
                         if y not in x_walls:
                             x_walls[y] = []
                         x_walls[y].append((wall_start, x))
@@ -171,14 +171,14 @@ class Map:
                         wall_start = y
                         prev_tile_state = True
                     elif prev_tile_state and tile_state is False:
-                        if y - 1 - wall_start > 1:
+                        if y - wall_start > 1:
                             if x not in y_walls:
                                 y_walls[x] = []
                             y_walls[x].append((wall_start, y - 1))
                         prev_tile_state = False
                         wall_start = -1
                 if prev_tile_state:
-                    if y - 1 - wall_start > 1:
+                    if y - wall_start > 1:
                         if x not in y_walls:
                             y_walls[x] = []
                         y_walls[x].append((wall_start, y))
