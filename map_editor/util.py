@@ -19,8 +19,11 @@ def convert_json_coords_to_json_rects(grid_size, object_dict):
 
     rect_walls = []
     for wall in walls:
-        x_0, y_0, x_1, y_2, color = wall
-        rect_walls.append([x_0 * grid_size, y_0 * grid_size, x_1 * grid_size, y_1 * grid_size, rgb_to_hex_color(color)])
+        x_0, y_0, x_1, y_1, color = wall
+        rect_walls.append([x_0 * grid_size, y_0 * grid_size, x_1 * grid_size + grid_size, y_1 * grid_size + grid_size,
+                           color])
+
+    return rect_walls
 
 
 if __name__ == "__main__":

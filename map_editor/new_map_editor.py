@@ -112,7 +112,7 @@ class Map:
 
         x_tiles = width // grid_size
         y_tiles = height // grid_size
-        self.division_size = grid_size
+        self.grid_size = grid_size
 
         # tiles[y_coord][x_coord]
         self.tiles = [[Tile(False, util.WHITE) for x in range(x_tiles)] for y in range(y_tiles)]
@@ -200,11 +200,30 @@ class Map:
             json.dump({"walls": walls}, outfile, indent=4)
 
         with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"buttons": [], "walls": util.convert_json_coords_to_json_rects({"walls": walls})}, outfile, indent=4)
-
+            json.dump({"buttons": [], "walls": util.convert_json_coords_to_json_rects(
+                self.grid_size, {"walls": walls})}, outfile, indent=4)
 
     def load_from_json(self):
-        pass
+        # reset tiles
+        for row in self.tiles:
+            for tile in row:
+                tile.tile_state = False
+                tile.color = util.WHITE
+
+        with open('map_files/map_coords_001.json', 'r') as jsonfile:
+            json_data = json.load(jsonfile)
+            walls = json_data["walls"]
+            for wall in walls:
+                x_0, y_0, x_1, y_1, color = wall
+                if x_0 == x_1:
+                    for y_coord in range(y_0, y_1 + 1):
+                        self.tiles[y_coord][x_0].tile_state = True
+                        self.tiles[y_coord][x_0].color = util.hex_to_rgb_color(color)
+                else:
+                    for x_coord in range(x_0, x_1 + 1):
+                        self.tiles[y_0][x_coord].tile_state = True
+                        self.tiles[y_0][x_coord].color = util.hex_to_rgb_color(color)
+
 
 
 class Tile:
