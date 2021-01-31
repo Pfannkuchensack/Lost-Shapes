@@ -220,10 +220,10 @@ class Map:
 
         # save to json
         with open('map_files/map_coords_001.json', 'w') as outfile:
-            json.dump({"shapes": shapes, "buttons": buttons, "walls": walls}, outfile, indent=4)
+            json.dump({"parts": shapes, "buttons": buttons, "walls": walls}, outfile, indent=4)
 
         with open('map_files/map_001.json', 'w') as outfile:
-            json.dump({"shapes": shapes, "buttons": buttons, "walls": util.convert_json_coords_to_json_rects(
+            json.dump({"parts": shapes, "buttons": buttons, "walls": util.convert_json_coords_to_json_rects(
                 self.grid_size, {"walls": walls})}, outfile, indent=4)
 
     def load_from_json(self):
@@ -255,7 +255,7 @@ class Map:
                 self.tiles[y_0 + 1][x_0].tile_state = True
                 self.tiles[y_0 + 1][x_0].color = util.GREEN
 
-            shapes = json_data["shapes"]
+            shapes = json_data["parts"]
             for shape in shapes:
                 x, y, color = (shape[0] // self.grid_size, shape[1] // self.grid_size, shape[2])
                 self.tiles[y][x].tile_state = True
