@@ -21,23 +21,49 @@
 		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 		<meta name="theme-color" content="#ffffff">
 
-		<title>Lost Shapes</title>
 		<meta name="gameid" content="{{ $gameid }}">
 		<meta name="map" content="{{ $map }}">
 
         <!-- Fonts -->
         <!--<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">-->
 
+		<style>
+			.inner {
+				display: table;
+				margin: 0 auto;
+			}
+
+			.padding {
+				padding: 20;
+			}
+
+			.fontHeading {
+				font-family: Verdana, Geneva, Tahoma, sans-serif;
+			}
+
+			.outer {
+				width: 100%;
+			}
+
+			body{
+				background: url('/background.svg') no-repeat bottom left fixed; 
+					-webkit-background-size: cover;
+					-moz-background-size: cover;
+					-o-background-size: cover;
+					background-size: cover;
+			}
+		</style>
+
         <!-- Styles -->
 		<script src="{{ mix('js/app.js') }}" defer></script>
 		<script src="{{ asset('js/socket.io.js') }}" defer></script>
     </head>
-    <body>
-		<div class="content">
-			<div class="title m-b-md">
-				Lost Shapes
+	<body>
+		<div class="content outer">
+			<div class="inner padding">
+				<h1 class="fontHeading">Lost Shapes</h1>
 			</div>
-			<canvas id="game" width="640" height="420"></canvas>
+			<canvas class="inner" id="game" width="640" height="420"></canvas>
 		</div>
     </body>
 </html>

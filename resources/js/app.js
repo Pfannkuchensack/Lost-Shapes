@@ -375,13 +375,15 @@ function drawParts() {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#99B4D7";
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
     drawWalls();
     drawButtons();
 	drawPlayerNetwork();
     drawParts();
     drawPlayer();
-    drawPlayerFieldOfView();
+    //drawPlayerFieldOfView();
 	movePlayer();
 	if(playerParts == 4 && networkParts == 4)
 	{
