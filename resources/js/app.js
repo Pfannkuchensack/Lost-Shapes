@@ -233,7 +233,7 @@ function partCollision() {
         if(part[2] == playerColor &&
             playerXPosition <= part[0] + shapeRadius && playerXPosition >= part[0] - (2 * shapeRadius)
             && playerYPosition <= part[1] + (2 * shapeRadius) && playerYPosition >= part[1] - shapeRadius){
-            setParts();
+            setParts(index);
             delete partsArray[index];
         }
 
@@ -329,15 +329,16 @@ function setWallNetwork(wallid, buttonid)
 	delete buttonArray[buttonid];
 }
 
-function setParts()
+function setParts(partid)
 {
 	playerParts++;
-	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor});
+	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor, 'i': partid});
 }
 
-function setPartsNetwork(partscount)
+function setPartsNetwork(partscount, partid)
 {
 	networkParts = partscount;
+	delete partsArray[partid]
 }
 
 function drawWalls() {
@@ -383,7 +384,8 @@ function draw() {
 	movePlayer();
 	if(playerParts == 4 && networkParts == 4)
 	{
-		window.location.href = window.location.href.split("/").splice(0,6).join('/') + '/' +  window.location.href.split("/")[6] + 1;
+		let newlevel = Number(window.location.href.split("/")[6]) + 1;
+		window.location.href = window.location.href.split("/").splice(0,6).join('/') + '/' + newlevel;
 	} 
 }
 
@@ -407,7 +409,7 @@ function startsocket() {
 		}
 		if(json.t == "p")
 		{
-			setPartsNetwork(json.p);
+			setPartsNetwork(json.p, json.i);
 		}
 	});
 
