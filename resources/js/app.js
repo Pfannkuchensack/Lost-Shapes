@@ -19,13 +19,13 @@ else
 
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var playerXPosition = 20;
-var playerYPosition = 20;
+var playerXPosition = 30;
+var playerYPosition = 30;
 var playerParts = 0;
 var xPlayerSpeed = 6;
 var yPlayerSpeed = 6;
-var networkXPosition = 70;
-var networkYPosition = 170;
+var networkXPosition = 30;
+var networkYPosition = 30;
 var networkParts = 0;
 
 var shapeRadius = 10;
