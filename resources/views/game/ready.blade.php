@@ -29,11 +29,14 @@
 				Lost Shapes
 			</div>
 			
-			<p>Du hast hast alle deine Formteile verloren und bist jetzt ein leerer Kreis.</p>
-			<p>Mach dich auf die Suche und finde alle dein Formteile, aber du bist nicht alleine.</p>
-			<p>Schalte für deinen Mitspieler Bereiche frei, die er ohne dich nicht erreichen könnte.</p>
+			<p>Gebe deinem Mitspieler seine URL und starte dann das Game für dich</p>
 
-			<a href="/ready/{{ substr(session()->getId(), 0, 7)}}">Lobby betreten</a>
+			<p>URL für deinen Mitspieler: {{ URL::to('/') }}/game/{{ $gameid }}/2/1</p>
+
+
+			<a href="/game/{{ $gameid }}/1/1">Game starten für dich</a>
+
+			
 		</div>
     </body>
 </html>
