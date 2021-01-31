@@ -5,6 +5,9 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 
+BLUE_SHAPE = (68, 81, 130)
+RED_SHAPE = (140, 10, 12)
+
 
 def hex_to_rgb_color(hex_string):
     hex_color = hex_string.lstrip("#")

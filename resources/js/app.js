@@ -19,13 +19,13 @@ else
 
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var playerXPosition = 20;
-var playerYPosition = 20;
-var xPlayerSpeed = 3;
-var yPlayerSpeed = 3;
+var playerXPosition = 30;
+var playerYPosition = 30;
 var playerParts = 0;
-var networkXPosition = 70;
-var networkYPosition = 170;
+var xPlayerSpeed = 6;
+var yPlayerSpeed = 6;
+var networkXPosition = 30;
+var networkYPosition = 30;
 var networkParts = 0;
 
 var shapeRadius = 10;
@@ -34,10 +34,12 @@ var torch = false;
 var lighting = 50;
 var wallArray = [];
 var buttonArray = [];
+var partsArray = [];
 
 window.axios.get("/map/" + window.location.href.split("/")[6]).then(({ data }) => {
 	wallArray = data.walls;
 	buttonArray = data.buttons;
+	partsArray = data.parts;
 });
 
 const UP = 0;
@@ -110,6 +112,8 @@ function movePlayer() {
         buttonCollision(DOWN);
         wallCollision(DOWN);
     }
+
+    partCollision();
 
     // collision detection end of map
     if(playerXPosition < 0 + shapeRadius){
@@ -225,6 +229,19 @@ function buttonCollision(pressed) {
     });
 }
 
+function partCollision() {
+    partsArray.forEach(function(part, index) {
+
+        if(part[2] == playerColor &&
+            playerXPosition <= part[0] + shapeRadius && playerXPosition >= part[0] - (2 * shapeRadius)
+            && playerYPosition <= part[1] + (2 * shapeRadius) && playerYPosition >= part[1] - shapeRadius){
+            setParts(index);
+            delete partsArray[index];
+        }
+
+    });
+}
+
 function drawPlayer() {
 	ctx.beginPath();
 	ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI*2);
@@ -314,15 +331,16 @@ function setWallNetwork(wallid, buttonid)
 	delete buttonArray[buttonid];
 }
 
-function setParts()
+function setParts(partid)
 {
 	playerParts++;
-	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor});
+	socket.emit("ls:gamelobby", {"t": "p", "p": playerParts, 'C': playerColor, 'i': partid});
 }
 
-function setPartsNetwork(partscount)
+function setPartsNetwork(partscount, partid)
 {
 	networkParts = partscount;
+	delete partsArray[partid]
 }
 
 function drawWalls() {
@@ -345,14 +363,34 @@ function drawButtons() {
     });
 }
 
+function drawParts() {
+    partsArray.forEach(function(part) {
+		ctx.beginPath();
+		ctx.moveTo(part[0], part[1]);
+		ctx.arc(part[0], part[1], shapeRadius, Math.PI / 2, Math.PI);
+		ctx.closePath();
+		ctx.fillStyle = part[2];
+		ctx.fill();
+        ctx.closePath();
+    });
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWalls();
     drawButtons();
 	drawPlayerNetwork();
-	drawPlayer();
-    //drawPlayerFieldOfView();
-    movePlayer();    
+    drawParts();
+    drawPlayer();
+    drawPlayerFieldOfView();
+	movePlayer();
+	if(playerParts == 4 && networkParts == 4)
+	{
+		let newlevel = Number(window.location.href.split("/")[6]) + 1;
+		playerParts = 0;
+		networkParts = 0;
+		window.location.href = window.location.href.split("/").splice(0,6).join('/') + '/' + newlevel;
+	} 
 }
 
 setInterval(draw, 15);
@@ -375,7 +413,7 @@ function startsocket() {
 		}
 		if(json.t == "p")
 		{
-			setPartsNetwork(json.p);
+			setPartsNetwork(json.p, json.i);
 		}
 	});
 

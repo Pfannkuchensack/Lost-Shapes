@@ -11,6 +11,6 @@
 |
 */
 
-Route::get('/', 'MainController@index');
+Route::get('/', 'MainController@index')->name('game.index');
 Route::get('/game/{gameid}/{color}/{map}', 'MainController@game');
 Route::get('/map/{nr}', 'MainController@map');
