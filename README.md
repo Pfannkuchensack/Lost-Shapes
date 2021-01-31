@@ -10,7 +10,7 @@ cp .env.example .env
 // edit .env if needed // redis pw etc
 ```
 
-iFf you use nginx as the webserver, you can proxy the websocket request through nginx. Use this in your nginx config:
+If you use nginx as the webserver, you can proxy the websocket request through nginx. Use this in your nginx config:
 
 ```
 location ~* socket\.io\/ {
