@@ -20,7 +20,7 @@ var log = function () { return console.log.apply(console, ['[' + new Date().toIS
 const redis = require('redis');
 const io = require('socket.io')(server);
 const { argv } = require('process');
-server.listen(8010);
+server.listen(8040);
 log('Starte Websocket Server');
 
 process.on('uncaughtException', function (e) {
