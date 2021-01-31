@@ -10,7 +10,7 @@ cp .env.example .env
 // edit .env if needed // redis pw etc
 ```
 
-if you use nginx as webserver, you can proxy the websocket request through nginx. use this in your nginx config for this
+iFf you use nginx as the webserver, you can proxy the websocket request through nginx. Use this in your nginx config:
 
 ```
 location ~* socket\.io\/ {
@@ -25,23 +25,24 @@ location ~* socket\.io\/ {
 }
 ```
 
-if you dont use the proxy then you need to edit the "resources/js/app.js" file at line 398 and 399.
+If you dont use the proxy then you need to edit the "resources/js/app.js" file at lines 398 and 399.
 
 ```javascript
 socket = io.connect("ws://localhost:8040", { reconnect: true, transports: ['websocket'], forceNew: true });
 //socket = io.connect({ reconnect: true, transports: ['websocket'], forceNew: true });
 ```
 
-in the file "websocket/server.js" is the port 8040 in use. if you cant have the port open then change it to whatever works for you.
-and edit file "resources/js/app.js" file at line 398
+In "websocket/server.js" the port 8040 is in use. If you can't have this port open then change it to whatever works for you and edit "resources/js/app.js" at line 398.
 
 ```javascript
 socket = io.connect("ws://localhost:NEWPORT", { reconnect: true, transports: ['websocket'], forceNew: true });
 ```
 
-when you update "resources/js/app.js", you need to run "npm run prod" for the updates so go life.
+When you update "resources/js/app.js", you need to run "npm run prod" for the updates to go live.
 
 // Websocket Start
+```
 node websocket/server.js
+```
 
-the websocket server needs to run if you want to play in multiplayer. Port 8040 if not changes needs to be free
+The websocket server needs to run if you want to play in multiplayer. Port 8040 (or changed port) needs to be free.
