@@ -40,7 +40,7 @@ socket = io.connect("ws://localhost:NEWPORT", { reconnect: true, transports: ['w
 
 When you update "resources/js/app.js", you need to run "npm run prod" for the updates to go live.
 
-// Websocket Start
+Websocket Start:
 ```
 node websocket/server.js
 ```
