@@ -1,5 +1,5 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/js/socket.io.js": "/js/socket.io.js"
+    "/js/app.js": "/js/app.js?id=d38f8949ffe431032b15",
+    "/css/app.css": "/css/app.css?id=d41d8cd98f00b204e980",
+    "/js/socket.io.js": "/js/socket.io.js?id=1e76acaad4af5cca3fea"
 }

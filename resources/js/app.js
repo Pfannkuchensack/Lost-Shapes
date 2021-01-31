@@ -395,7 +395,8 @@ function draw() {
 setInterval(draw, 15);
 
 function startsocket() {
-	socket = io.connect({ reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	//socket = io.connect("ws://localhost:8040", { reconnect: true, transports: ['websocket'], forceNew: true });
+	socket = io.connect({ reconnect: true, transports: ['websocket'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: playerColor, gameid: gameid });
 	});
