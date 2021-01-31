@@ -1,6 +1,5 @@
 # Lost-Shapes
-The Chronicle Of The Lost Shapes And How To Find Them
-
+The journey of two circles trying to fill the emptiness within.
 
 
 # Setup
