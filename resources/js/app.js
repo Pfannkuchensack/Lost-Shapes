@@ -139,7 +139,7 @@ function movePlayer() {
 function wallCollision(pressed) {
     wallArray.forEach(function(wall, index) {
         if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-			console.log(index,wall);
+			//console.log(index,wall);
             return;
         }
 
