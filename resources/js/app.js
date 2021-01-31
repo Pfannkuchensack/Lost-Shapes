@@ -22,8 +22,8 @@ var ctx = canvas.getContext("2d");
 var playerXPosition = 30;
 var playerYPosition = 30;
 var playerParts = 0;
-var xPlayerSpeed = 6;
-var yPlayerSpeed = 6;
+var xPlayerSpeed = 3;
+var yPlayerSpeed = 3;
 var networkXPosition = 30;
 var networkYPosition = 30;
 var networkParts = 0;
@@ -139,7 +139,7 @@ function movePlayer() {
 function wallCollision(pressed) {
     wallArray.forEach(function(wall, index) {
         if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-			console.log(index,wall);
+			//console.log(index,wall);
             return;
         }
 

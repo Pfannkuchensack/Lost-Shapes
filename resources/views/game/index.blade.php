@@ -28,7 +28,7 @@
 			<div class="title m-b-md">
 				Lost Shapes
 			</div>
-			<canvas id="game" width="640" height="420"></canvas>
+			Neue Lobby erstellen?
 		</div>
     </body>
 </html>

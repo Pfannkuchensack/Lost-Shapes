@@ -18,7 +18,7 @@ class MainController extends Controller
 		{
 			return view('game.game', compact(['gameid', 'map']));
 		}
-		return redirect('game.index');
+		return redirect('/');
 	}
 
 	public function map($nr)
