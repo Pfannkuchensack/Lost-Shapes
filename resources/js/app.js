@@ -31,7 +31,8 @@ var networkParts = 0;
 var shapeRadius = 10;
 
 var torch = false;
-var lighting = 50;
+var baseLighting = 80;
+var lighting = 80;
 var wallArray = [];
 var buttonArray = [];
 var partsArray = [];
@@ -287,7 +288,7 @@ function drawPlayerFieldOfView(){
     if(torch && lighting < 120){
         lighting += 3;
     }
-    else if(!torch && lighting > 80) {
+    else if(!torch && lighting > baseLighting) {
         lighting -= 3;
 	}
 	ctx.arc(playerXPosition, playerYPosition, lighting, 0, Math.PI * 2);
