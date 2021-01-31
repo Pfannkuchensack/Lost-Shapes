@@ -382,7 +382,7 @@ function draw() {
 	drawPlayerNetwork();
     drawParts();
     drawPlayer();
-    //drawPlayerFieldOfView();
+    drawPlayerFieldOfView();
 	movePlayer();
 	if(playerParts == 4 && networkParts == 4)
 	{
