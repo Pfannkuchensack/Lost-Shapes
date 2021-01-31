@@ -230,10 +230,13 @@ function buttonCollision(pressed) {
 }
 
 function partCollision() {
-    partsArray.forEach(function(part) {
+    partsArray.forEach(function(part, index) {
 
-        if( true ){
-            
+        if(part[2] == playerColor &&
+            playerXPosition <= part[0] + shapeRadius && playerXPosition >= part[0] - (2 * shapeRadius)
+            && playerYPosition <= part[1] + (2 * shapeRadius) && playerYPosition >= part[1] - shapeRadius){
+            setParts();
+            delete partsArray[index];
         }
 
     });
@@ -376,8 +379,8 @@ function draw() {
     drawWalls();
     drawButtons();
 	drawPlayerNetwork();
-    drawPlayer();
     drawParts();
+    drawPlayer();
     //drawPlayerFieldOfView();
 	movePlayer();
 	if(playerParts == 4 && networkParts == 4)
