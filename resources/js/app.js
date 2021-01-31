@@ -113,6 +113,8 @@ function movePlayer() {
         wallCollision(DOWN);
     }
 
+    partCollision();
+
     // collision detection end of map
     if(playerXPosition < 0 + shapeRadius){
         playerXPosition = 0 + shapeRadius;
@@ -224,6 +226,16 @@ function buttonCollision(pressed) {
                 }
             }
         }
+    });
+}
+
+function partCollision() {
+    partsArray.forEach(function(part) {
+
+        if( true ){
+            
+        }
+
     });
 }
 
