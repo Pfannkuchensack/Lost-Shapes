@@ -12,6 +12,11 @@ class MainController extends Controller
 		return view('game.index');
 	}
 
+	public function ready($gameid)
+	{
+		return view('game.ready', compact(['gameid']));
+	}
+
 	public function game($gameid, $color, $map)
 	{
 		if(file_exists(resource_path('map/' . $map . '.json')))
