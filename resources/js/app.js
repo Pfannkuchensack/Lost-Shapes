@@ -375,7 +375,9 @@ function drawParts() {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#99B4D7";
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
     drawWalls();
     drawButtons();
 	drawPlayerNetwork();
