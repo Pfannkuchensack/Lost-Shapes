@@ -22,8 +22,8 @@ var ctx = canvas.getContext("2d");
 var playerXPosition = 30;
 var playerYPosition = 30;
 var playerParts = 0;
-var xPlayerSpeed = 6;
-var yPlayerSpeed = 6;
+var xPlayerSpeed = 3;
+var yPlayerSpeed = 3;
 var networkXPosition = 30;
 var networkYPosition = 30;
 var networkParts = 0;
@@ -393,7 +393,7 @@ function draw() {
 	} 
 }
 
-setInterval(draw, 33);
+setInterval(draw, 15);
 
 function startsocket() {
 	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
