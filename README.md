@@ -3,10 +3,12 @@ The journey of two circles trying to fill the emptiness within.
 
 
 # Setup
+```
 composer install
 npm install
 cp .env.example .env
 // edit .env if needed // redis pw etc
+```
 
 if you use nginx as webserver, you can proxy the websocket request through nginx. use this in your nginx config for this
 
