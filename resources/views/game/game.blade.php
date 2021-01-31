@@ -42,7 +42,15 @@
 			}
 
 			.outer {
-				width:100%
+				width: 100%;
+			}
+
+			body{
+				background: url('/background.svg') no-repeat bottom left fixed; 
+					-webkit-background-size: cover;
+					-moz-background-size: cover;
+					-o-background-size: cover;
+					background-size: cover;
 			}
 		</style>
 
