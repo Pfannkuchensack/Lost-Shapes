@@ -139,17 +139,17 @@ function movePlayer() {
 function wallCollision(pressed) {
     wallArray.forEach(function(wall, index) {
         if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-			//console.log(index,wall);
+			console.log(index,wall);
             return;
         }
 
         if(pressed == UP) {
             if(playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]){
                 if(playerYPosition - shapeRadius + yPlayerSpeed >= wall[3] && playerYPosition - shapeRadius <= wall[3]){
-					/*console.log(index,wall);
-					if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-						return;
-					}*/
+					// console.log(index,wall);
+					// if(wall[4].toLowerCase() == playerColor.toLowerCase()){
+					// 	return;
+					// }
                     playerYPosition = wall[3] + shapeRadius + 1;
                 }
             }
@@ -157,10 +157,10 @@ function wallCollision(pressed) {
         if(pressed == DOWN){
             if(playerXPosition + shapeRadius >= wall[0] && playerXPosition - shapeRadius <= wall[2]){
                 if(playerYPosition + shapeRadius - yPlayerSpeed <= wall[1] && playerYPosition + shapeRadius >= wall[1]){
-					/*console.log(index,wall);
-					if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-						return;
-					}*/
+					// console.log(index,wall);
+					// if(wall[4].toLowerCase() == playerColor.toLowerCase()){
+					// 	return;
+					// }
                     playerYPosition = wall[1] - shapeRadius - 1;
                 }
             }
@@ -168,11 +168,10 @@ function wallCollision(pressed) {
         if(pressed == LEFT) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition - shapeRadius + xPlayerSpeed >= wall[2] && playerXPosition - shapeRadius <= wall[2]){
-					/*console.log(index,wall);
-
-					if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-						return;
-					}*/
+					// console.log(index,wall);
+					// if(wall[4].toLowerCase() == playerColor.toLowerCase()){
+					// 	return;
+					// }
                     playerXPosition = wall[2] + shapeRadius + 1;
                 }
             }
@@ -180,11 +179,10 @@ function wallCollision(pressed) {
         if(pressed == RIGHT) {
             if(playerYPosition + shapeRadius >= wall[1] && playerYPosition - shapeRadius <= wall[3]){
                 if(playerXPosition + shapeRadius - xPlayerSpeed <= wall[0] && playerXPosition + shapeRadius >= wall[0]){
-					/*console.log(index,wall);
-
-					if(wall[4].toLowerCase() == playerColor.toLowerCase()){
-						return;
-					}*/
+					// console.log(index,wall);
+					// if(wall[4].toLowerCase() == playerColor.toLowerCase()){
+					// 	return;
+					// }
                     playerXPosition = wall[0] - shapeRadius - 1;
                 }
             }
