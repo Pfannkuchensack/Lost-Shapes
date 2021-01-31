@@ -380,7 +380,7 @@ function draw() {
 	drawPlayerNetwork();
     drawParts();
     drawPlayer();
-    //drawPlayerFieldOfView();
+    drawPlayerFieldOfView();
 	movePlayer();
 	if(playerParts == 4 && networkParts == 4)
 	{
@@ -391,10 +391,10 @@ function draw() {
 	} 
 }
 
-setInterval(draw, 33);
+setInterval(draw, 15);
 
 function startsocket() {
-	socket = io.connect('ws://localhost:8010', { reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
+	socket = io.connect({ reconnect: true, transports: ['websocket', 'polling'], forceNew: true });
 	socket.on('connect', function (data) {
 		socket.emit('go', { color: playerColor, gameid: gameid });
 	});

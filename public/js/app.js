@@ -19479,8 +19479,9 @@ function movePlayer() {
     playerYPosition += yPlayerSpeed;
     buttonCollision(DOWN);
     wallCollision(DOWN);
-  } // collision detection end of map
+  }
 
+  partCollision(); // collision detection end of map
 
   if (playerXPosition < 0 + shapeRadius) {
     playerXPosition = 0 + shapeRadius;
@@ -19596,6 +19597,15 @@ function buttonCollision(pressed) {
   });
 }
 
+function partCollision() {
+  partsArray.forEach(function (part, index) {
+    if (part[2] == playerColor && playerXPosition <= part[0] + shapeRadius && playerXPosition >= part[0] - 2 * shapeRadius && playerYPosition <= part[1] + 2 * shapeRadius && playerYPosition >= part[1] - shapeRadius) {
+      setParts(index);
+      delete partsArray[index];
+    }
+  });
+}
+
 function drawPlayer() {
   ctx.beginPath();
   ctx.arc(playerXPosition, playerYPosition, shapeRadius, 0, Math.PI * 2);
@@ -19694,17 +19704,19 @@ function setWallNetwork(wallid, buttonid) {
   delete buttonArray[buttonid];
 }
 
-function setParts() {
+function setParts(partid) {
   playerParts++;
   socket.emit("ls:gamelobby", {
     "t": "p",
     "p": playerParts,
-    'C': playerColor
+    'C': playerColor,
+    'i': partid
   });
 }
 
-function setPartsNetwork(partscount) {
+function setPartsNetwork(partscount, partid) {
   networkParts = partscount;
+  delete partsArray[partid];
 }
 
 function drawWalls() {
@@ -19744,13 +19756,16 @@ function draw() {
   drawWalls();
   drawButtons();
   drawPlayerNetwork();
+  drawParts();
   drawPlayer();
-  drawParts(); //drawPlayerFieldOfView();
-
+  drawPlayerFieldOfView();
   movePlayer();
 
   if (playerParts == 4 && networkParts == 4) {
-    window.location.href = window.location.href.split("/").splice(0, 6).join('/') + '/' + window.location.href.split("/")[6] + 1;
+    var newlevel = Number(window.location.href.split("/")[6]) + 1;
+    playerParts = 0;
+    networkParts = 0;
+    window.location.href = window.location.href.split("/").splice(0, 6).join('/') + '/' + newlevel;
   }
 }
 
@@ -19780,7 +19795,7 @@ function startsocket() {
     }
 
     if (json.t == "p") {
-      setPartsNetwork(json.p);
+      setPartsNetwork(json.p, json.i);
     }
   });
   socket.on('debug', function (data) {
